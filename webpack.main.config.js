@@ -1,3 +1,5 @@
+const ASSET_PATH = process.env.ASSET_PATH || '/';
+
 module.exports = {
   /**
    * This is the main entry point for your application, it's the first file

@@ -1,7 +1,7 @@
 import './DesktopHeader.css'
 const remote = window.require('electron').remote;
 import React, { useEffect, useState } from 'react';
-const closeButton = require('../../assets/close.svg').default
+const closeButton = require('../../../assets/close.svg').default
 
 function DesktopHeader() {
     const BrowserWindow = remote.BrowserWindow;

@@ -5,7 +5,7 @@ import JoinContainer from './join-container/JoinContainer';
 import io from 'socket.io-client';
 import DesktopHeader from './desktop-header/DesktopHeader';
 
-const appLogo = require('../assets/speech-bubble-svgrepo-com.svg').default
+const appLogo = require('../../assets/speech-bubble-svgrepo-com.svg').default
 
 
 function App() {

@@ -1,4 +1,5 @@
 import { app, BrowserWindow, Session } from "electron";
+import '../assets/speech-bubble-svgrepo-com.svg'
 //import { addBypassChecker } from 'electron-compile'
 import path from "path";
 
