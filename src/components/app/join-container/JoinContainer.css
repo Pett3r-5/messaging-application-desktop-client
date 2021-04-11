@@ -1,0 +1,24 @@
+.go-button {
+    background-color:rgb(181, 201, 238);
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin: 5%;
+    border: 0px;
+    width: 20%;
+    min-width: 20px;
+    height:20px;
+}
+
+.go-button:hover {
+    background-color:rgb(110, 139, 192);
+    cursor: pointer;
+}
+
+.join-input-field {
+    width: 60%;
+    min-width: 40%;
+    height: 20px;
+}
+
+.typography {
+    font-family: Arial Medium, sans-serif;
+}

@@ -5,6 +5,7 @@
   "description": "Electron Typescript React Boilerplate / Starter",
   "bin": "./lib/setup.js",
   "main": ".webpack/main",
+  "author": "Petter",
   "scripts": {
     "tag": "node ./config/tag.js",
     "auto-changelog": "auto-changelog --hide-credit --breaking-pattern \"breaking:\"",
@@ -69,10 +70,13 @@
   },
   "dependencies": {
     "@hot-loader/react-dom": "^17.0.1",
+    "@types/socket.io-client": "^1.4.36",
+    "electron-compile": "^6.4.4",
     "electron-squirrel-startup": "^1.0.0",
     "node-fetch": "^2.6.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "socket.io-client": "^4.0.1",
     "unzipper": "^0.10.11"
   },
   "devDependencies": {

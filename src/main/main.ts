@@ -1,9 +1,13 @@
 import { app, BrowserWindow, Session } from "electron";
+//import { addBypassChecker } from 'electron-compile'
 import path from "path";
 
 declare global {
   const MAIN_WINDOW_WEBPACK_ENTRY: string;
 }
+
+
+
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -21,10 +25,14 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
+      enableRemoteModule: true,
       nodeIntegration: true,
-      contextIsolation: false,
+      contextIsolation: false
     },
+    titleBarStyle: 'customButtonsOnHover',
+    frame: false
   });
+  mainWindow.setMenuBarVisibility(false)
 
   /** Manage browser sessions, cookies, cache, proxy settings, etc */
   const ses = mainWindow.webContents.session;
@@ -68,6 +76,9 @@ app.on("activate", () => {
     createWindow();
   }
 });
+
+//addBypassChecker((filePath:any) => { return filePath.indexOf(app.getAppPath()) === -1 && (/.jpg/.test(filePath) || /.ms/.test(filePath) || /.png/.test(filePath)); });
+
 
 function addReactDevTools(ses: Session) {
   const devToolsModulePath = path.join(process.cwd(), "lib", "react-dev-tools");
