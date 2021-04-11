@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import { HashRouter, Route, Switch } from 'react-router-dom';
 import { hot } from "react-hot-loader/root";
+import { machineId } from 'node-machine-id';
+
 import './App.css';
-import JoinContainer from './join-container/JoinContainer';
 import io from 'socket.io-client';
 import DesktopHeader from './desktop-header/DesktopHeader';
-
-const appLogo = require('../../assets/speech-bubble-svgrepo-com.svg').default
+import Home from './home/Home';
+import Chat from './chat/Chat';
 
 
 function App() {
+  let socket:any;
 
   useEffect(()=>{
 
-    const socket = io("http://localhost:5000");
+    socket = io("http://localhost:5000");
     socket.on('connect', function(){
       console.log("Connected")
       socket.emit("test-event", {prop: "some word"})
@@ -23,26 +26,31 @@ function App() {
       console.log("Disconnected")
     });
   }, [])
+  
+  const createConversation = async ()=> {
+    const user = await machineId()
+    console.log(`user: ${user}`)
+    socket.emit("create-conversation", {owner: user})
+  }
+
+
 
 
   return (
-    <div style={{margin: 0, padding: 0}}>
-      <DesktopHeader/>
-    <div className="App">
-      <div style={{margin:50}}>
-        <img style={{height:100}} alt="logo" src={appLogo}/>
+    <HashRouter>
+      <div style={{margin: 0, padding: 0}}>
+        <DesktopHeader/>
+        
+        <Switch>
+          <Route exact path='/'>
+            <Home createConversation={createConversation}/>
+          </Route>
+          <Route path='/chat'>
+            <Chat />
+          </Route>
+        </Switch>
       </div>
-
-      <div>
-        <button className="creation-button">
-        Criar convers
-        </button>
-      </div>
-      <JoinContainer/>
-      
-    </div>
-    </div>
-    
+    </HashRouter>
   );
 }
 
