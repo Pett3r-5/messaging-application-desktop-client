@@ -30,7 +30,19 @@ function App() {
   const createConversation = async ()=> {
     const user = await machineId()
     console.log(`user: ${user}`)
-    socket.emit("create-conversation", {owner: user})
+    socket.emit("create-conversation",
+    {
+      conversationLink: undefined,
+      messages: [],
+      users: [
+        {
+          clientId: user, 
+          name: "User", 
+          isConversationOwner: true
+        }
+      ]
+    } 
+    )
   }
 
 
