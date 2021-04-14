@@ -8,24 +8,29 @@ import io from 'socket.io-client';
 import DesktopHeader from './desktop-header/DesktopHeader';
 import Home from './home/Home';
 import Chat from './chat/Chat';
+import { init } from 'electron-compile';
 
 
 function App() {
   let socket:any;
 
   useEffect(()=>{
+    init()
+    
+  }, [])
 
+  function init(){
     socket = io("http://localhost:5000");
     socket.on('connect', function(){
-      console.log("Connected")
-      socket.emit("test-event", {prop: "some word"})
+      console.log("Connected here")
     });
-    
 
-    socket.on('disconnect', function(){
-      console.log("Disconnected")
-    });
-  }, [])
+    socket.on("conversation-created", (res:any)=>{
+      console.log("created")
+      console.log(res)
+    })
+    
+  }
   
   const createConversation = async ()=> {
     const user = await machineId()
@@ -38,11 +43,13 @@ function App() {
         {
           clientId: user, 
           name: "User", 
-          isConversationOwner: true
+          isConversationOwner: true,
+          isOnline: true
         }
       ]
     } 
     )
+    
   }
 
 
