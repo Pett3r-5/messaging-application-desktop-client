@@ -1,0 +1,11 @@
+.message {
+    height: 10%;
+    width: 70%;
+    word-break: break-all;
+    white-space: normal;
+    margin: 10% 5%;
+    display: flex;
+    align-self: flex-start;
+    
+}
+

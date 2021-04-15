@@ -57,7 +57,7 @@ function App() {
 
   return (
     <HashRouter>
-      <div style={{margin: 0, padding: 0}}>
+      <div className="app-container">
         <DesktopHeader/>
         
         <Switch>

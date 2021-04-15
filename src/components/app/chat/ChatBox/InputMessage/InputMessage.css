@@ -1,0 +1,38 @@
+.input-box-shadow {
+    z-index: 9;
+    display: block;
+    position: absolute;
+    height: 50%;
+    background-color: red;
+    width: 100%;
+    bottom: 0;
+    border-radius: 0px 0px 20px 20px;
+    box-shadow: 1px 8px 5px #0f0f0f !important;
+}
+
+.input-box {
+    z-index: 9999;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    border-radius: 0px 0px 20px 20px;
+    display: flex;
+    
+}
+
+.input-v {
+    height: 100%;
+    width: 100%;
+    border-radius: 0px 0px 20px 20px;
+    display: flex;
+    
+}
+
+textarea {
+    resize: none;
+    border: 0 none #FFF;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    outline:none;
+  }

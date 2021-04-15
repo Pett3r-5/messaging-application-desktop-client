@@ -1,7 +1,6 @@
 .home-container {
     text-align: center;
-    background-image: linear-gradient(rgb(66, 65, 88), rgb(211, 102, 174) 200%);
-    height: 100vh;
+    height: 100%;
     display: flex;
     margin: 0px; 
     justify-content: center; 

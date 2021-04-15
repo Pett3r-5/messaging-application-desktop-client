@@ -15,6 +15,22 @@ body {
   }
 }
 
+.app-container {
+  margin: 0; 
+  padding: 0;
+  height: 100vh;
+  background-image: linear-gradient(rgb(66, 65, 88), rgb(211, 102, 174) 200%);
+  /*-webkit-animation:colorchange 30s infinite;*/
+}
+
+/*
+@-webkit-keyframes colorchange {
+  0%   {background-image: linear-gradient(rgb(66, 65, 88), rgb(211, 102, 174) 200%);}
+  50%  {background-image: linear-gradient(rgb(211, 102, 174),  rgb(66, 65, 88) 200%);}
+  100% {background-image: linear-gradient(rgb(66, 65, 88), rgb(211, 102, 174) 200%);}
+}
+*/
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
