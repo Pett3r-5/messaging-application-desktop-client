@@ -3,12 +3,16 @@ import './Chat.css';
 import ChatBox from './ChatBox/ChatBox';
 import ChatListContainer from './ChatsListContainer/ChatsListContainer';
 
+interface ChatProps {
+  postMessage: Function
+}
 
-function Chat() {
+
+function Chat({postMessage}: ChatProps) {
   
     return (
       <div className="chat-container">
-          <ChatBox />
+          <ChatBox postMessage={postMessage}/>
           <ChatListContainer />
       </div>
       

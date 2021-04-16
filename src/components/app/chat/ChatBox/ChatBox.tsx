@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import './ChatBox.css';
 import ChatMessage from './ChatMessage/ChatMessage';
-import InputMessage from './InputMessage/InputMessage';
+import MessageForm from './MessageForm/MessageForm';
 
+interface ChatBoxProps {
+  postMessage: Function
+}
 
-function ChatBox() {
+function ChatBox({ postMessage }:ChatBoxProps) {
   
     return (
       <div className="chat-box">
@@ -12,8 +15,8 @@ function ChatBox() {
             <ChatMessage />
             <ChatMessage />
           </div>
+          <MessageForm postMessage={postMessage}/>
           
-          <InputMessage />
       </div>
       
     );

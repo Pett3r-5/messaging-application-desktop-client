@@ -9,6 +9,7 @@ import DesktopHeader from './desktop-header/DesktopHeader';
 import Home from './home/Home';
 import Chat from './chat/Chat';
 import { init } from 'electron-compile';
+import Message from '../../models/Message';
 
 
 function App() {
@@ -27,6 +28,11 @@ function App() {
 
     socket.on("conversation-created", (res:any)=>{
       console.log("created")
+      console.log(res)
+    })
+
+    socket.on("message-posted", (res:any)=>{
+      console.log("posted")
       console.log(res)
     })
     
@@ -52,6 +58,16 @@ function App() {
     
   }
 
+  const postMessage = async (message:Message)=> {
+    const user = await machineId()
+    message.sentBy = {
+      name: "name",
+      clientId: user
+    }
+
+    socket.emit("post-message",message)
+  }
+
 
 
 
@@ -65,7 +81,7 @@ function App() {
             <Home createConversation={createConversation}/>
           </Route>
           <Route path='/chat'>
-            <Chat />
+            <Chat postMessage={postMessage}/>
           </Route>
         </Switch>
       </div>
