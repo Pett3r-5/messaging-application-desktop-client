@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import Conversation from '../../../models/Conversation';
 import './Chat.css';
 import ChatBox from './ChatBox/ChatBox';
 import ChatListContainer from './ChatsListContainer/ChatsListContainer';
 
 interface ChatProps {
+  openedConversation: Conversation
   postMessage: Function
+  userId: string
 }
 
 
-function Chat({postMessage}: ChatProps) {
+function Chat({openedConversation, postMessage, userId}: ChatProps) {
   
     return (
       <div className="chat-container">
-          <ChatBox postMessage={postMessage}/>
+          <ChatBox openedConversation={openedConversation} postMessage={postMessage} userId={userId}/>
           <ChatListContainer />
       </div>
       

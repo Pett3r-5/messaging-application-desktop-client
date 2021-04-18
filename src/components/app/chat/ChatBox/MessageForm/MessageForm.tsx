@@ -10,7 +10,7 @@ interface MessageFormProps {
 
 function MessageForm({ postMessage }: MessageFormProps) {
     const [message, setMessage] = useState<Message>({
-        content:"aaa"
+        content:""
       })
 
     const handleChange= (event:any)=> {
@@ -18,8 +18,8 @@ function MessageForm({ postMessage }: MessageFormProps) {
       }
 
       const submitRegistration= (event:SyntheticEvent)=> {
-        postMessage(message)
         event.preventDefault()
+        postMessage(message)
         setMessage({content:""})
       }
     

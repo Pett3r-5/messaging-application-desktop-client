@@ -1,11 +1,6 @@
 
 
-export default class User {
+export default interface User {
     clientId: string
     name: string
-
-    constructor(clientId: string, name: string){
-            this.name = name;
-            this.clientId = clientId
-    }
 }

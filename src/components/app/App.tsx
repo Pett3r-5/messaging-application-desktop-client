@@ -8,64 +8,91 @@ import io from 'socket.io-client';
 import DesktopHeader from './desktop-header/DesktopHeader';
 import Home from './home/Home';
 import Chat from './chat/Chat';
-import { init } from 'electron-compile';
+import Conversation from '../../models/Conversation';
 import Message from '../../models/Message';
+import User from '../../models/User';
+let socket = io("http://localhost:5000");
+socket.on('connect', function(){
+  console.log("Connected here")
+});
 
 
 function App() {
-  let socket:any;
+  let [userId, setUserId]  = useState<string>("");
+
+  const [ openedConversation, setOpenedConversation ] = useState<Conversation>({
+    conversationLink: "",
+    users: [],
+    messages: []
+  })
+
+  const [ conversationList, setConversationList ] = useState<Conversation[]>([])
 
   useEffect(()=>{
+    createUser()
     init()
-    
+    return  () => {
+      socket.off("get-conversation-list");
+      socket.off("conversation-created");
+      socket.off("message-posted");
+    };
   }, [])
 
-  function init(){
-    socket = io("http://localhost:5000");
-    socket.on('connect', function(){
-      console.log("Connected here")
-    });
+  async function createUser(){
+    let idd = await machineId()
+    setUserId(idd)
+  }
 
-    socket.on("conversation-created", (res:any)=>{
-      console.log("created")
-      console.log(res)
+  function init(){
+    
+    
+    socket.emit("request-conversation-list", userId)
+    socket.on("get-conversation-list",(conversationList:Conversation[])=>{
+      setConversationList(conversationList)
+    })
+
+    socket.on("conversation-created", (res:Conversation)=>{
+
+      setOpenedConversation(res)
+      console.log("conversation-created")
+      console.log(JSON.stringify(res, undefined, 4))
     })
 
     socket.on("message-posted", (res:any)=>{
-      console.log("posted")
+      console.log("message-posted")
       console.log(res)
+
+      setOpenedConversation(res)
     })
     
   }
   
   const createConversation = async ()=> {
-    const user = await machineId()
-    console.log(`user: ${user}`)
-    socket.emit("create-conversation",
-    {
-      conversationLink: undefined,
+    const conv = {
+      conversationLink: "",
       messages: [],
-      users: [
-        {
-          clientId: user, 
-          name: "User", 
-          isConversationOwner: true,
-          isOnline: true
-        }
-      ]
-    } 
-    )
+      users: [{
+        clientId: userId, 
+            name: "User"
+      }]
+    }
     
+
+    setOpenedConversation(conv)
+
+    console.log(`create-conversation: ${JSON.stringify(conv, undefined, 4)}`)
+    socket.emit("create-conversation", conv)
   }
 
-  const postMessage = async (message:Message)=> {
-    const user = await machineId()
+  const postMessage = (message:Message)=> {
     message.sentBy = {
       name: "name",
-      clientId: user
+      clientId: userId
     }
 
-    socket.emit("post-message",message)
+    console.log("post-message posting conversation");
+    console.log(JSON.stringify(message, undefined, 4));
+    socket.emit("post-message",{ conversation:openedConversation, message:message })
   }
 
 
@@ -81,7 +108,7 @@ function App() {
             <Home createConversation={createConversation}/>
           </Route>
           <Route path='/chat'>
-            <Chat postMessage={postMessage}/>
+            <Chat openedConversation={openedConversation} postMessage={postMessage} userId={userId}/>
           </Route>
         </Switch>
       </div>

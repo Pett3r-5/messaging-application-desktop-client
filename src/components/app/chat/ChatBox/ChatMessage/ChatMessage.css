@@ -1,11 +1,37 @@
-.message {
+.own-message {
     height: 10%;
-    width: 70%;
+    width: 80%;
     word-break: break-all;
     white-space: normal;
-    margin: 15% 5%;
+    margin: 15% 10%;
     display: flex;
     align-self: flex-start;
-    
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.others-message {
+    height: 10%;
+    width: 80%;
+    word-break: break-all;
+    white-space: normal;
+    margin: 15% 10%;
+    display: flex;
+    align-self: flex-start;
+    align-items: flex-end;
+    flex-direction: column;
+}
+
+.message-content {
+    color:white;
+    padding: 0;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.message-detail {
+    color:white;
+    padding: 0;
+    font-size: 13px;
 }
 

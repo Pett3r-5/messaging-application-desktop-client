@@ -12,8 +12,9 @@ interface HomeProps {
 function Home({createConversation}: HomeProps) {
 
     
-    const onClickCreateConversation = ()=> {
-        createConversation();
+    const onClickCreateConversation = async()=> {
+      console.log("here1")
+        await createConversation();
     }
 
   
