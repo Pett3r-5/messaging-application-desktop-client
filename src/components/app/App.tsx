@@ -95,6 +95,16 @@ function App() {
     socket.emit("post-message",{ conversation:openedConversation, message:message })
   }
 
+  const joinConversationByLink = (conversationLink:string)=> {
+
+    console.log("join-conversation");
+    console.log(JSON.stringify(conversationLink, undefined, 4));
+    socket.emit("join-conversation",{ conversationLink:conversationLink, user: {
+      clientId: userId,
+      name: "name"
+    } })
+  }
+
 
 
 
@@ -105,7 +115,7 @@ function App() {
         
         <Switch>
           <Route exact path='/'>
-            <Home createConversation={createConversation}/>
+            <Home createConversation={createConversation} joinConversationByLink={joinConversationByLink}/>
           </Route>
           <Route path='/chat'>
             <Chat openedConversation={openedConversation} postMessage={postMessage} userId={userId}/>

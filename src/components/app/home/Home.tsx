@@ -7,14 +7,15 @@ const appLogo = require('../../../assets/speech-bubble-svgrepo-com.svg').default
 
 interface HomeProps {
     createConversation: Function
+    joinConversationByLink: Function
 }
 
-function Home({createConversation}: HomeProps) {
+function Home({ createConversation, joinConversationByLink }: HomeProps) {
 
     
-    const onClickCreateConversation = async()=> {
+    const onClickCreateConversation = ()=> {
       console.log("here1")
-        await createConversation();
+      createConversation();
     }
 
   
@@ -32,7 +33,7 @@ function Home({createConversation}: HomeProps) {
                 </button>
             </Link>
         </div>
-        <JoinContainer/>
+        <JoinContainer joinConversationByLink={joinConversationByLink}/>
         
       </div>
       

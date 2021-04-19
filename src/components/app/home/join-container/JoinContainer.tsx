@@ -1,16 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { SyntheticEvent, useEffect, useState } from 'react';
+import { withRouter } from 'react-router-dom';
 import './JoinContainer.css';
 
-function JoinContainer() {
+interface JoinContainerProps {
+    joinConversationByLink: Function
+}
+
+function JoinContainer(props: any & JoinContainerProps) {
+    const [ linkInput, setLinkInput ] = useState<string>("")
+
+    const handleChange= (event:any)=> {
+        setLinkInput(event.currentTarget.value)
+      }
+
+      const submitRegistration= (event:SyntheticEvent)=> {
+        event.preventDefault()
+        props.joinConversationByLink(linkInput)
+        props.history.push("/chat");
+      }
+
     return (
         <div className="join-box">
             <span className="typography">Entrar em uma conversa</span>
-            <form style={{ margin: 20 }}>
+            <form onSubmit={submitRegistration} style={{ margin: 20 }}>
                 <div style={{ display: "flex", alignItems: "start" }}>
                     <label htmlFor="conversationHash">Link: </label>
                 </div>
                 <div className="form-container">
-                    <input className="join-input-field" id="conversationHash" type="text" />
+                    <input className="join-input-field" name="linkInput" value={linkInput} onChange={(e) =>handleChange(e)} id="conversationHash" type="text" />
                     <button className="go-button" type="submit">Ir</button>
                 </div>
             </form>
@@ -18,4 +35,4 @@ function JoinContainer() {
     )
 }
 
-export default JoinContainer
+export default withRouter(JoinContainer)
