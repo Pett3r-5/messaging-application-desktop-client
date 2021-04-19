@@ -33,7 +33,7 @@ function App() {
     init()
     return  () => {
       socket.off("get-conversation-list");
-      socket.off("conversation-created");
+      socket.off("conversation-joined");
       socket.off("message-posted");
     };
   }, [])
@@ -51,10 +51,10 @@ function App() {
       setConversationList(conversationList)
     })
 
-    socket.on("conversation-created", (res:Conversation)=>{
+    socket.on("conversation-joined", (res:Conversation)=>{
 
       setOpenedConversation(res)
-      console.log("conversation-created")
+      console.log("conversation-joined")
       console.log(JSON.stringify(res, undefined, 4))
     })
 
