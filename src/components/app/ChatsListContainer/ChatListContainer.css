@@ -1,4 +1,6 @@
 .chat-list-container {
     width: 30%;
+    height: 80%;
+    margin:10% 0%;
     border-left: solid 2px rgb(255, 214, 219);
 }

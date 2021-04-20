@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { HashRouter, Route, Switch } from 'react-router-dom';
 import { hot } from "react-hot-loader/root";
 import { machineId } from 'node-machine-id';
 
@@ -11,14 +10,25 @@ import Chat from './chat/Chat';
 import Conversation from '../../models/Conversation';
 import Message from '../../models/Message';
 import User from '../../models/User';
+import ChatListContainer from './ChatsListContainer/ChatsListContainer';
 let socket = io("http://localhost:5000");
 socket.on('connect', function(){
   console.log("Connected here")
 });
 
+interface Display {
+  isChatOpened: boolean
+  isThereChatHistory: boolean
+}
+
+interface UserState {
+  id: string
+  name: string
+}
 
 function App() {
-  let [userId, setUserId]  = useState<string>("");
+  const [userId, setUserId]  = useState<string>("");
+  const [ display, setDisplay ] = useState<Display>({isChatOpened: false, isThereChatHistory: false})
 
   const [ openedConversation, setOpenedConversation ] = useState<Conversation>({
     conversationLink: "",
@@ -49,11 +59,14 @@ function App() {
     socket.emit("request-conversation-list", userId)
     socket.on("get-conversation-list",(conversationList:Conversation[])=>{
       setConversationList(conversationList)
+      setDisplay({...display, isThereChatHistory: true})
     })
 
     socket.on("conversation-joined", (res:Conversation)=>{
 
       setOpenedConversation(res)
+      setDisplay({...display, isChatOpened: true})
+
       console.log("conversation-joined")
       console.log(JSON.stringify(res, undefined, 4))
     })
@@ -109,20 +122,20 @@ function App() {
 
 
   return (
-    <HashRouter>
-      <div className="app-container">
-        <DesktopHeader/>
+    <div className="app-container">
+      <DesktopHeader/>
+      <div className="app-body">
+        {display.isChatOpened ? 
+        <Chat openedConversation={openedConversation} postMessage={postMessage} userId={userId}/> : 
+        <Home createConversation={createConversation} joinConversationByLink={joinConversationByLink}/>}
+
+        {display.isThereChatHistory ? 
+        <ChatListContainer /> 
+        : <></>}
         
-        <Switch>
-          <Route exact path='/'>
-            <Home createConversation={createConversation} joinConversationByLink={joinConversationByLink}/>
-          </Route>
-          <Route path='/chat'>
-            <Chat openedConversation={openedConversation} postMessage={postMessage} userId={userId}/>
-          </Route>
-        </Switch>
       </div>
-    </HashRouter>
+      
+    </div>
   );
 }
 

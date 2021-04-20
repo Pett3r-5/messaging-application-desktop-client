@@ -27,11 +27,9 @@ function Home({ createConversation, joinConversationByLink }: HomeProps) {
         </div>
   
         <div>
-            <Link to="/chat">
-                <button className="creation-button" onClick={onClickCreateConversation}>
-                Criar conversa
-                </button>
-            </Link>
+            <button className="creation-button" onClick={onClickCreateConversation}>
+            Criar conversa
+            </button>
         </div>
         <JoinContainer joinConversationByLink={joinConversationByLink}/>
         

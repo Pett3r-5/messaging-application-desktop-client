@@ -1,5 +1,4 @@
 import React, { SyntheticEvent, useEffect, useState } from 'react';
-import { withRouter } from 'react-router-dom';
 import './JoinContainer.css';
 
 interface JoinContainerProps {
@@ -16,7 +15,6 @@ function JoinContainer(props: any & JoinContainerProps) {
       const submitRegistration= (event:SyntheticEvent)=> {
         event.preventDefault()
         props.joinConversationByLink(linkInput)
-        props.history.push("/chat");
       }
 
     return (
@@ -35,4 +33,4 @@ function JoinContainer(props: any & JoinContainerProps) {
     )
 }
 
-export default withRouter(JoinContainer)
+export default JoinContainer
