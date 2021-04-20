@@ -49,15 +49,16 @@ function App() {
   }, [])
 
   async function createUser(){
-    let idd = await machineId()
-    setUserId(idd)
+    
   }
 
-  function init(){
+  async function init(){
+    let idd = await machineId()
+    setUserId(idd)
     
-    
-    socket.emit("request-conversation-list", userId)
-    socket.on("get-conversation-list",(conversationList:Conversation[])=>{
+    socket.emit("request-conversation-list", idd)
+    socket.on("listen-conversation-list",(conversationList:Conversation[])=>{
+      console.log("listen-conversation-list")
       setConversationList(conversationList)
       setDisplay({...display, isThereChatHistory: true})
     })
@@ -130,7 +131,7 @@ function App() {
         <Home createConversation={createConversation} joinConversationByLink={joinConversationByLink}/>}
 
         {display.isThereChatHistory ? 
-        <ChatListContainer /> 
+        <ChatListContainer conversations={conversationList} /> 
         : <></>}
         
       </div>
