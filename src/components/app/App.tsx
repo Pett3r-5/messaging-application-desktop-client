@@ -18,7 +18,6 @@ socket.on('connect', function(){
 
 interface Display {
   isChatOpened: boolean
-  isThereChatHistory: boolean
 }
 
 interface UserState {
@@ -27,8 +26,8 @@ interface UserState {
 }
 
 function App() {
-  const [userId, setUserId]  = useState<string>("");
-  const [ display, setDisplay ] = useState<Display>({isChatOpened: false, isThereChatHistory: false})
+  const [user, setUser]  = useState<UserState>({id:"", name:"guest"});
+  const [ display, setDisplay ] = useState<Display>({isChatOpened: false})
 
   const [ openedConversation, setOpenedConversation ] = useState<Conversation>({
     conversationLink: "",
@@ -53,14 +52,13 @@ function App() {
   }
 
   async function init(){
-    let idd = await machineId()
-    setUserId(idd)
+    let id = await machineId()
+    setUser({...user, id: id})
     
-    socket.emit("request-conversation-list", idd)
+    socket.emit("request-conversation-list", id)
     socket.on("listen-conversation-list",(conversationList:Conversation[])=>{
       console.log("listen-conversation-list")
       setConversationList(conversationList)
-      setDisplay({...display, isThereChatHistory: true})
     })
 
     socket.on("conversation-joined", (res:Conversation)=>{
@@ -86,8 +84,8 @@ function App() {
       conversationLink: "",
       messages: [],
       users: [{
-        clientId: userId, 
-            name: "User"
+        clientId: user.id, 
+            name: user.name
       }]
     }
     
@@ -100,8 +98,8 @@ function App() {
 
   const postMessage = (message:Message)=> {
     message.sentBy = {
-      name: "name",
-      clientId: userId
+      name: user.name,
+      clientId: user.id
     }
 
     console.log("post-message posting conversation");
@@ -114,9 +112,20 @@ function App() {
     console.log("join-conversation");
     console.log(JSON.stringify(conversationLink, undefined, 4));
     socket.emit("join-conversation",{ conversationLink:conversationLink, user: {
-      clientId: userId,
-      name: "name"
+      clientId: user.id,
+      name: user.name
     } })
+  }
+
+  const openConversation = (conversationLink:string)=> {
+
+    console.log("join-conversation");
+    console.log(JSON.stringify(conversationLink, undefined, 4));
+    socket.emit("join-conversation",{ conversationLink:conversationLink, user: {
+      clientId: user.id,
+      name: user.name
+    } })
+
   }
 
 
@@ -127,11 +136,11 @@ function App() {
       <DesktopHeader/>
       <div className="app-body">
         {display.isChatOpened ? 
-        <Chat openedConversation={openedConversation} postMessage={postMessage} userId={userId}/> : 
+        <Chat openedConversation={openedConversation} postMessage={postMessage} userId={user.name}/> : 
         <Home createConversation={createConversation} joinConversationByLink={joinConversationByLink}/>}
 
-        {display.isThereChatHistory ? 
-        <ChatListContainer conversations={conversationList} /> 
+        {!!conversationList && conversationList.length > 0 ? 
+        <ChatListContainer conversations={conversationList} openedConversation={openedConversation} openConversation={openConversation} /> 
         : <></>}
         
       </div>

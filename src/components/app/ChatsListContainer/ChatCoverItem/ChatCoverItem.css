@@ -3,5 +3,18 @@
     width: 80%;
     padding: 10px;
     margin: 3%;
-    background-color: blueviolet;
+    background-color: rgb(148, 69, 221);
+    border-radius: 10px;
+    box-shadow: 1px 1px 3px #111111;
+}
+
+.chat-item:hover {
+    cursor:pointer;
+    background-color: rgb(143, 38, 241);
+}
+
+.chat-item:active {
+    cursor:pointer;
+    background-color: rgb(84, 66, 100);
+    box-shadow: -1px 0px 3px #111111;
 }

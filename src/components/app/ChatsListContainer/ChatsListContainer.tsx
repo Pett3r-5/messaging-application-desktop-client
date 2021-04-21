@@ -5,14 +5,24 @@ import './ChatListContainer.css';
 
 interface ChatListContainerProps {
   conversations: Conversation[]
+  openedConversation: Conversation
+  openConversation: Function
 }
 
-function ChatListContainer({conversations}: ChatListContainerProps) {
+function ChatListContainer({conversations, openedConversation, openConversation }: ChatListContainerProps) {
   
     return (
       <div className="chat-list-container">
-        {!!conversations ? 
-        conversations.map((conversation, index)=><ChatCoverItem conversation={conversation} key={index}/>)
+        {!!conversations && !openedConversation.conversationLink ? 
+        conversations.map((conversation:Conversation, index)=>(
+          <ChatCoverItem conversation={conversation} openConversation={openConversation} key={index}/>))
+        : <></>}
+
+        {!!conversations && !!openedConversation.conversationLink ? 
+        conversations.map((conversation:Conversation, index)=>(
+          openedConversation && conversation.conversationLink !== openedConversation.conversationLink
+          ? <ChatCoverItem conversation={conversation} openConversation={openConversation} key={index}/>
+        : <></>))
         : <></>}
           
       </div>

@@ -25,7 +25,6 @@ function Home({ createConversation, joinConversationByLink }: HomeProps) {
         <div style={{margin:50}}>
           <img style={{height:100}} alt="logo" src={appLogo}/>
         </div>
-  
         <div>
             <button className="creation-button" onClick={onClickCreateConversation}>
             Criar conversa
