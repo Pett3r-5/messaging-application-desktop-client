@@ -1,0 +1,48 @@
+.welcome-sentence {
+    margin: 25px;
+    display: flex;
+    flex-direction: row;
+}
+
+#welcome-user {
+    font-size: 18px;
+    color: white;
+    margin: 0px 8px;
+}
+
+#edit-button {
+    height: 25px;
+    width: 25px;
+    padding: 0px;
+    border: 0px;
+    border-radius: 5px;
+    outline:none;
+    background-color: rgb(119, 91, 146);
+    box-shadow: 1px 1px 1px #111111 !important;
+}
+
+#edit-button:hover {
+    cursor: pointer;
+    background-color: rgb(185, 155, 212);
+}
+
+#edit-button:active {
+    cursor: pointer;
+    background-color: rgb(64, 55, 71);
+    outline:none;
+    box-shadow: -1px 0px 1px #111111;
+}
+
+#tool-icon {
+    height: 16px;
+    line-height: 0px;
+    margin: auto;
+    vertical-align: middle;
+}
+
+#input-name {
+    width:60px;
+    background: rgb(194, 171, 216);
+    border: 0px;
+    box-shadow: inset 1px 1px 3px #111111;
+}

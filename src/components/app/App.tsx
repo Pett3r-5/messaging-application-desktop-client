@@ -21,12 +21,12 @@ interface Display {
 }
 
 interface UserState {
-  id: string
+  clientId: string
   name: string
 }
 
 function App() {
-  const [user, setUser]  = useState<UserState>({id:"", name:"guest"});
+  const [user, setUser]  = useState<UserState>({clientId:"", name:"guest"});
   const [ display, setDisplay ] = useState<Display>({isChatOpened: false})
 
   const [ openedConversation, setOpenedConversation ] = useState<Conversation>({
@@ -38,33 +38,43 @@ function App() {
   const [ conversationList, setConversationList ] = useState<Conversation[]>([])
 
   useEffect(()=>{
-    createUser()
     init()
     return  () => {
       socket.off("get-conversation-list");
       socket.off("conversation-joined");
       socket.off("message-posted");
+      socket.off("user-data")
     };
   }, [])
 
-  async function createUser(){
-    
-  }
 
   async function init(){
-    let id = await machineId()
-    setUser({...user, id: id})
+    let id = ""
+    try {
+      id = await machineId()
+    } catch (error) {
+      console.log(error)
+    }
     
-    socket.emit("request-conversation-list", id)
+    setUser({...user, clientId: id})
+    
+    
+    getConversationList(id)
     socket.on("listen-conversation-list",(conversationList:Conversation[])=>{
       console.log("listen-conversation-list")
       setConversationList(conversationList)
     })
 
+    socket.on("user-data",(user:User)=>{
+      console.log("user-data")
+      console.log(user)
+      setUser({clientId: user.clientId, name: user.name})
+    })
+
     socket.on("conversation-joined", (res:Conversation)=>{
 
       setOpenedConversation(res)
-      setDisplay({...display, isChatOpened: true})
+      setDisplay({isChatOpened: true})
 
       console.log("conversation-joined")
       console.log(JSON.stringify(res, undefined, 4))
@@ -79,27 +89,24 @@ function App() {
     
   }
   
-  const createConversation = async ()=> {
+  const createConversation = ()=> {
     const conv = {
       conversationLink: "",
       messages: [],
       users: [{
-        clientId: user.id, 
+        clientId: user.clientId, 
             name: user.name
       }]
     }
-    
-
-    setOpenedConversation(conv)
 
     console.log(`create-conversation: ${JSON.stringify(conv, undefined, 4)}`)
     socket.emit("create-conversation", conv)
-  }
+}
 
   const postMessage = (message:Message)=> {
     message.sentBy = {
       name: user.name,
-      clientId: user.id
+      clientId: user.clientId
     }
 
     console.log("post-message posting conversation");
@@ -112,20 +119,28 @@ function App() {
     console.log("join-conversation");
     console.log(JSON.stringify(conversationLink, undefined, 4));
     socket.emit("join-conversation",{ conversationLink:conversationLink, user: {
-      clientId: user.id,
+      clientId: user.clientId,
       name: user.name
     } })
   }
 
   const openConversation = (conversationLink:string)=> {
 
-    console.log("join-conversation");
+    console.log("get-conversation");
     console.log(JSON.stringify(conversationLink, undefined, 4));
-    socket.emit("join-conversation",{ conversationLink:conversationLink, user: {
-      clientId: user.id,
-      name: user.name
-    } })
+    socket.emit("get-conversation",{conversationLink:conversationLink})
 
+  }
+
+  const getConversationList = (id:string)=> {
+    socket.emit("request-conversation-list", {clientId: id, name:user.name})
+  }
+
+  const editUsername = (user:User) => {
+    console.log("edit-usernmae")
+    console.log(user)
+    socket.emit("edit-username", user)
+    getConversationList(user.clientId)
   }
 
 
@@ -136,8 +151,8 @@ function App() {
       <DesktopHeader/>
       <div className="app-body">
         {display.isChatOpened ? 
-        <Chat openedConversation={openedConversation} postMessage={postMessage} userId={user.name}/> : 
-        <Home createConversation={createConversation} joinConversationByLink={joinConversationByLink}/>}
+        <Chat openedConversation={openedConversation} postMessage={postMessage} userId={user.clientId}/> : 
+        <Home user={user} createConversation={createConversation} editUsername={editUsername} joinConversationByLink={joinConversationByLink}/>}
 
         {!!conversationList && conversationList.length > 0 ? 
         <ChatListContainer conversations={conversationList} openedConversation={openedConversation} openConversation={openConversation} /> 
