@@ -11,13 +11,21 @@ import Conversation from '../../models/Conversation';
 import Message from '../../models/Message';
 import User from '../../models/User';
 import ChatListContainer from './ChatsListContainer/ChatsListContainer';
+import ChatOptions from './ChatOptions/ChatOptions';
+import ChatCreationForm from '../../models/ChatCreationForm';
 let socket = io("http://localhost:5000");
 socket.on('connect', function(){
   console.log("Connected here")
 });
 
+enum ChatState {
+  OPTIONS,
+  OPENED,
+  CLOSED
+}
+
 interface Display {
-  isChatOpened: boolean
+  chatState: ChatState
 }
 
 interface UserState {
@@ -27,7 +35,7 @@ interface UserState {
 
 function App() {
   const [user, setUser]  = useState<UserState>({clientId:"", name:"guest"});
-  const [ display, setDisplay ] = useState<Display>({isChatOpened: false})
+  const [ display, setDisplay ] = useState<Display>({chatState: ChatState.CLOSED})
 
   const [ openedConversation, setOpenedConversation ] = useState<Conversation>({
     conversationLink: "",
@@ -74,7 +82,7 @@ function App() {
     socket.on("conversation-joined", (res:Conversation)=>{
 
       setOpenedConversation(res)
-      setDisplay({isChatOpened: true})
+      setDisplay({ chatState: ChatState.OPENED })
 
       console.log("conversation-joined")
       console.log(JSON.stringify(res, undefined, 4))
@@ -88,18 +96,26 @@ function App() {
     })
     
   }
+
+  const showNewChatOptions = ()=> {
+    setDisplay({chatState: ChatState.OPTIONS })
+  }
   
-  const createConversation = ()=> {
+  const createConversation = (chatCreationForm:ChatCreationForm)=> {
     const conv = {
       conversationLink: "",
       messages: [],
+      subject: chatCreationForm.subject,
+      isPublic: chatCreationForm.isPublic === "true" ? true : false,
+      persist: chatCreationForm.persist === "true" ? true : false,
       users: [{
         clientId: user.clientId, 
             name: user.name
       }]
     }
 
-    console.log(`create-conversation: ${JSON.stringify(conv, undefined, 4)}`)
+    console.log(JSON.stringify(conv, undefined, 4));
+    
     socket.emit("create-conversation", conv)
 }
 
@@ -150,9 +166,16 @@ function App() {
     <div className="app-container">
       <DesktopHeader/>
       <div className="app-body">
-        {display.isChatOpened ? 
+        { display.chatState === ChatState.OPTIONS ? <ChatOptions createConversation={createConversation}/> : <></>}
+
+        { display.chatState === ChatState.OPENED ?
         <Chat openedConversation={openedConversation} postMessage={postMessage} userId={user.clientId}/> : 
-        <Home user={user} createConversation={createConversation} editUsername={editUsername} joinConversationByLink={joinConversationByLink}/>}
+        <></>}
+
+        { display.chatState === ChatState.CLOSED ?
+         <Home user={user} showNewChatOptions={showNewChatOptions} editUsername={editUsername} joinConversationByLink={joinConversationByLink}/> 
+        : <></>
+        }
 
         {!!conversationList && conversationList.length > 0 ? 
         <ChatListContainer conversations={conversationList} openedConversation={openedConversation} openConversation={openConversation} /> 

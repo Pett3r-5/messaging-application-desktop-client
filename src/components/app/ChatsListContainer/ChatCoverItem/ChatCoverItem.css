@@ -5,6 +5,7 @@
     margin: 3%;
     background-color: rgb(148, 69, 221);
     border-radius: 10px;
+    overflow: hidden;
     box-shadow: 1px 1px 3px #111111;
 }
 

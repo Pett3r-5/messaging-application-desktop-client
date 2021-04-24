@@ -18,8 +18,8 @@ function ChatCoverItem({ conversation, openConversation }: ChatConverItemProps) 
   
     return (
       <div className="chat-item" onClick={openThisConversation}>
-        {!!conversation.subject ? <div>conversation.subject</div> : <></>}
-        <div>
+        {!!conversation.subject ? <div>{conversation.subject}</div> : <></>}
+        <div style={{fontSize: 14}}>
         {conversation.users.map((element, index)=>(<>
         {index === conversation.users.length-1 ? element.name : addComma(element.name) } 
         </>))}

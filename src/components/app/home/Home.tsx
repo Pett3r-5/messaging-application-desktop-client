@@ -10,18 +10,18 @@ const appLogo = require('../../../assets/speech-bubble-svgrepo-com.svg').default
 
 interface HomeProps {
     user: User
-    createConversation: Function
+    showNewChatOptions: Function
     editUsername: Function
     joinConversationByLink: Function
 }
 
-function Home({ user, createConversation, joinConversationByLink, editUsername }: HomeProps) {
+function Home({ user, showNewChatOptions, joinConversationByLink, editUsername }: HomeProps) {
     useEffect(()=>{
 
     }, [user])
     
-    const onClickCreateConversation = ()=> {
-      createConversation()
+    const onClickOpenNewConversation = ()=> {
+      showNewChatOptions()
     }
 
 
@@ -34,7 +34,7 @@ function Home({ user, createConversation, joinConversationByLink, editUsername }
         </div>
         <UserName user={user} editUsername={editUsername} />
         <div>
-            <button className="creation-button" onClick={onClickCreateConversation}>
+            <button className="creation-button" onClick={onClickOpenNewConversation}>
             Criar conversa
             </button>
         </div>
