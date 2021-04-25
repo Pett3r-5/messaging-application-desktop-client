@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import ScrollContainer from 'react-indiana-drag-scroll';
+
 import Conversation from '../../../models/Conversation';
 import ChatCoverItem from './ChatCoverItem/ChatCoverItem';
 import './ChatListContainer.css';
@@ -12,7 +14,7 @@ interface ChatListContainerProps {
 function ChatListContainer({conversations, openedConversation, openConversation }: ChatListContainerProps) {
   
     return (
-      <div className="chat-list-container">
+      <ScrollContainer className="chat-list-container">
         {!!conversations && !openedConversation.conversationLink ? 
         conversations.map((conversation:Conversation, index)=>(
           <ChatCoverItem conversation={conversation} openConversation={openConversation} key={index}/>))
@@ -25,7 +27,7 @@ function ChatListContainer({conversations, openedConversation, openConversation 
         : <></>))
         : <></>}
           
-      </div>
+      </ScrollContainer>
       
     );
   }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Conversation from '../../../../models/Conversation';
 import './ChatCoverItem.css';
+import { mapper } from '../../../../commons/mapper';
 
 interface ChatConverItemProps {
   conversation: Conversation
@@ -8,9 +9,6 @@ interface ChatConverItemProps {
 }
 
 function ChatCoverItem({ conversation, openConversation }: ChatConverItemProps) {
-  function addComma(name:string){
-    return (`${name}, `)
-  }
 
   function openThisConversation() {
     openConversation(conversation.conversationLink)
@@ -21,7 +19,7 @@ function ChatCoverItem({ conversation, openConversation }: ChatConverItemProps) 
         {!!conversation.subject ? <div>{conversation.subject}</div> : <></>}
         <div style={{fontSize: 14}}>
         {conversation.users.map((element, index)=>(<>
-        {index === conversation.users.length-1 ? element.name : addComma(element.name) } 
+        {index === conversation.users.length-1 ? element.name : mapper.addComma(element.name) } 
         </>))}
         </div>
         

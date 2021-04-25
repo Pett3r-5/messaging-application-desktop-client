@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Socket } from 'socket.io-client/build/socket';
 import User from '../../../models/User';
 import './Home.css';
 import JoinContainer from './join-container/JoinContainer';

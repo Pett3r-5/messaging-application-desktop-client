@@ -15,7 +15,7 @@ function ChatMessage({message, userId}: ChatMessageProps) {
         <div className="message-detail">
           {message.sentBy?.name} disse:
         </div>
-        <div className="message-content">
+        <div className={message.sentBy.clientId===userId ? "own-message-content" : "others-message-content"}>
           {message.content}
         </div>
         <div className="message-detail">

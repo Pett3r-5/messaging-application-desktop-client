@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Conversation from '../../../models/Conversation';
 import './Chat.css';
-import ChatBox from './ChatBox/ChatBox';
+import ChatWindow from './ChatWindow/ChatWindow';
 
 interface ChatProps {
   openedConversation: Conversation
@@ -14,7 +14,7 @@ function Chat({openedConversation, postMessage, userId}: ChatProps) {
   
     return (
       <div className="chat-container">
-          <ChatBox openedConversation={openedConversation} postMessage={postMessage} userId={userId}/>
+          <ChatWindow openedConversation={openedConversation} postMessage={postMessage} userId={userId}/>
       </div>
     );
   }

@@ -1,4 +1,4 @@
-.chat-box {
+.chat-window {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -7,6 +7,15 @@
     width: 90%;
     margin: 5%;
     border-radius: 20px;
-    padding: 0px 3px;
     box-shadow: 1px 1px 5px #0f0f0f !important;
+}
+
+.messages-container {
+    overflow: auto; 
+    max-height:71%;
+}
+
+.messages-container-smaller {
+    overflow: auto; 
+    max-height:64%;
 }
