@@ -41,9 +41,13 @@ function ChatHeader({ conversation, onHeaderHover }: ChatHeaderProps) {
                         </div>
                     : <div><b>{!!conversation.isPublic? "público" : "particular"}</b></div>}
                     
-                    <div className="chat-users">{conversation.users.map((element, index) => (<>
-                        {index === conversation.users.length - 1 ? element.name : mapper.addComma(element.name)}
-                    </>))}
+                    <div className="chat-users">
+                        { !!conversation && !!conversation.users ?
+                            conversation.users.map((element, index) => (<>
+                                {index === conversation.users.length - 1 ? element.name : mapper.addComma(element.name)}
+                            </>))
+                            : <></>
+                        }
                     </div>
                 </div>
             </div>

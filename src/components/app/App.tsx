@@ -38,6 +38,7 @@ function App() {
   const [ display, setDisplay ] = useState<Display>({chatState: ChatState.CLOSED})
 
   const [ openedConversation, setOpenedConversation ] = useState<Conversation>({
+    _id: "",
     conversationLink: "",
     users: [],
     messages: []
