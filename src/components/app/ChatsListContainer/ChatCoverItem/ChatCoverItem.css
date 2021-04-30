@@ -3,7 +3,7 @@
     width: 80%;
     padding: 10px;
     margin: 3%;
-    background-color: rgb(148, 69, 221);
+    background-color: rgb(236, 224, 122);
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 1px 1px 3px #111111;
@@ -11,7 +11,7 @@
 
 .chat-item:hover {
     cursor:pointer;
-    background-color: rgb(143, 38, 241);
+    background-color: rgb(241, 224, 192);
 }
 
 .chat-item:active {

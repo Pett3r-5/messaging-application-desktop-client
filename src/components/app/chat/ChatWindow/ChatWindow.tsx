@@ -9,9 +9,10 @@ interface ChatWindowProps {
   openedConversation: Conversation
   postMessage: Function
   userId: string
+  minimizeConversation: Function
 }
 
-function ChatWindow({ openedConversation, postMessage, userId }:ChatWindowProps) {
+function ChatWindow({ openedConversation, postMessage, userId, minimizeConversation }:ChatWindowProps) {
   const [ messageContainerHeight, setMessageContainerHeight ] = useState<boolean>(false)
 
   useEffect(()=> {
@@ -33,7 +34,7 @@ function ChatWindow({ openedConversation, postMessage, userId }:ChatWindowProps)
   
     return (
       <div className="chat-window">
-          <ChatHeader conversation={openedConversation} onHeaderHover={onHeaderHover}/>
+          <ChatHeader conversation={openedConversation} onHeaderHover={onHeaderHover} minimizeConversation={minimizeConversation}/>
           <div className={messageContainerHeight ? "messages-container-smaller"  : "messages-container" }>
             {!!openedConversation && !!openedConversation.messages ? 
             openedConversation.messages.map((message, index)=><ChatMessage message={message} userId={userId} key={index} />) 

@@ -11,14 +11,10 @@
     font-size: 13px;
 }
 
-.chat-header-content {
-    display: flex;
-    justify-content: space-between;
-}
 
 .chat-header:hover {
     border-radius: 20px 20px 0px 0px;
-    height: 80px;
+    height: 100px;
     width: 100%;
     background-color: rgb(223, 61, 255);
     display: flex;
@@ -31,6 +27,34 @@
     -ms-transition: 1s;
     -o-transition: 1s;
     transition: 1s;
+}
+
+.chat-header-content {
+    display: flex;
+    width:100;
+    margin-bottom: 5px;
+    justify-content: space-between;
+}
+
+.chat-first-row-width {
+    width:100%;
+}
+
+#minimize-icon-container {
+    margin-right: 10px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#minimize-icon-image {
+    height: 20px;
+    width: auto;
+}
+
+#minimize-icon-image:hover {
+    height: 25px;
+    width: auto;
+    cursor: pointer;
 }
 
 .chat-users {

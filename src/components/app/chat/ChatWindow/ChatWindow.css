@@ -17,5 +17,10 @@
 
 .messages-container-smaller {
     overflow: auto; 
-    max-height:64%;
+    max-height:58%;
+    -webkit-transition: 1s;
+    -moz-transition: 1s;
+    -ms-transition: 1s;
+    -o-transition: 1s;
+    transition: 1s;
 }

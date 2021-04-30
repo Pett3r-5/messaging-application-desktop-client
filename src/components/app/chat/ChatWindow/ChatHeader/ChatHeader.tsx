@@ -2,14 +2,17 @@ import React, { useEffect, useState } from 'react';
 import Conversation from '../../../../../models/Conversation';
 import './ChatHeader.css';
 import { mapper } from '../../../../../commons/mapper'
+import { Redirect } from 'react-router';
 const downArrow = require('../../../../../assets/PinClipart.com_zip-clipart_2015963.png').default
+const minimize = require('../../../../../assets/minimize.svg').default
 
 interface ChatHeaderProps {
     conversation: Conversation
     onHeaderHover: Function
+    minimizeConversation: Function
 }
 
-function ChatHeader({ conversation, onHeaderHover }: ChatHeaderProps) {
+function ChatHeader({ conversation, onHeaderHover, minimizeConversation }: ChatHeaderProps) {
     const [showContent, setShowContent] = useState<boolean>(false)
 
     const handleMouseOver = () => {
@@ -22,13 +25,23 @@ function ChatHeader({ conversation, onHeaderHover }: ChatHeaderProps) {
         onHeaderHover(false)
     }
 
+    const minimizeChat = ()=> {
+        minimizeConversation()
+    }
+
     if (!!conversation) {
         return (
             <div className="chat-header" onMouseOver={handleMouseOver} onMouseLeave={handleMouseOut}>
-                <div>
+                <div className="chat-header-content">
+                    <div className="chat-first-row-width" style={{marginLeft: 10}}></div>
                     {showContent && !!conversation.subject ? 
-                    <div className="chat-subject"><p className="chat-subject-paragraph">{conversation.subject}</p></div> 
+                    <div className="chat-subject chat-first-row-width" >
+                        <p className="chat-subject-paragraph">{conversation.subject}</p>
+                    </div> 
                     : <></>}
+                    <div className="chat-first-row-width" id="minimize-icon-container">
+                            <img src={minimize} id="minimize-icon-image" onClick={minimizeChat}/>
+                    </div>
                 </div>
                 <div className="chat-header-content">
                     <div className="chat-link">

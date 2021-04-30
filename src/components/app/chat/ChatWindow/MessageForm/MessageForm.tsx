@@ -23,6 +23,12 @@ function MessageForm({ postMessage }: MessageFormProps) {
         setMessage({ content: "" })
     }
 
+    const submitOnEnter = (event:any)=> {
+        if(event.key === 'Enter' && event.shiftKey === false) {
+            submitRegistration(event)
+          }
+    }
+
 
     return (
         <div className="external-padding">
@@ -30,7 +36,7 @@ function MessageForm({ postMessage }: MessageFormProps) {
                 <form onSubmit={submitRegistration}>
                     <div className="input-box-shadow"></div>
                     <div className="input-box">
-                        <textarea id="content" name="content" value={message.content} onChange={(e) => handleChange(e)} className="input-v" />
+                        <textarea id="content" name="content" value={message.content} onChange={(e) => handleChange(e)} onKeyDown={(e)=>submitOnEnter(e)} className="input-v" />
                         <button type="submit" disabled={!message.content} className={!!message.content ? "submit-button" : "submit--button-disabled"}>
                             <img src={pressButton} style={{ height: 30, width: "auto", margin: "auto" }} />
                         </button>

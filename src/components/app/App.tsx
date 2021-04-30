@@ -232,6 +232,18 @@ function App() {
     getConversationList(user.clientId)
   }
 
+  const minimizeConversation = ()=>{
+    socket.emit("leave-conversation", openedConversation.conversationLink)
+    setOpenedConversation({
+      _id: "",
+      conversationLink: "",
+      users: [],
+      messages: []
+    })
+    setDisplay(({ chatState: ChatState.CLOSED }))
+    getConversationList(user.clientId)
+  }
+
 
 
 
@@ -242,7 +254,7 @@ function App() {
         {display.chatState === ChatState.OPTIONS ? <ChatOptions createConversation={createConversation} /> : <></>}
 
         {display.chatState === ChatState.OPENED ?
-          <Chat openedConversation={openedConversation} postMessage={postMessage} userId={user.clientId} /> :
+          <Chat openedConversation={openedConversation} postMessage={postMessage} userId={user.clientId} minimizeConversation={minimizeConversation} /> :
           <></>}
 
         {display.chatState === ChatState.CLOSED ?
