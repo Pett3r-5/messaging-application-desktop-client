@@ -30,8 +30,8 @@ interface UserState {
   name: string
 }
 
-const chatApplicationServiceBaseUrl = "http://localhost:7011"
-const chatApplicationManagerBaseUrl = "http://localhost:5000"
+const chatApplicationServiceBaseUrl = "https://chat-application-service.herokuapp.com"
+const chatApplicationManagerBaseUrl = "https://chat-application-manager.herokuapp.com"
 
 const defaultHeader = {
   'Accept': 'application/json',
