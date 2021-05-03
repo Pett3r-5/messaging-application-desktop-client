@@ -13,7 +13,7 @@ import User from '../../models/User';
 import ChatListContainer from './ChatsListContainer/ChatsListContainer';
 import ChatOptions from './ChatOptions/ChatOptions';
 import ChatCreationForm from '../../models/ChatCreationForm';
-import axios, { AxiosResponse } from 'axios';
+import { baseUrls, defaultHeader } from '../../commons/http-constants';
 
 enum ChatState {
   OPTIONS,
@@ -30,15 +30,8 @@ interface UserState {
   name: string
 }
 
-const chatApplicationServiceBaseUrl = "https://chat-application-service.herokuapp.com"
-const chatApplicationManagerBaseUrl = "https://chat-application-manager.herokuapp.com"
 
-const defaultHeader = {
-  'Accept': 'application/json',
-  'Content-Type': 'application/json'
-}
-
-let socket = io(chatApplicationManagerBaseUrl);
+let socket = io(baseUrls.applicationManagerUrl);
 socket.on('connect', function () {
   console.log("Connected here")
 });
@@ -160,14 +153,14 @@ function App() {
     let conversationList
     let userUpserted
     try {
-      const conversationReq = await fetch(`${chatApplicationServiceBaseUrl}/conversation/clientId/${id}`, {
+      const conversationReq = await fetch(`${baseUrls.applicationServiceUrl}/conversation/clientId/${id}`, {
         method: 'GET',
         headers: defaultHeader
       })
 
       conversationList = await conversationReq.json()
 
-      const userReq = await fetch(`${chatApplicationServiceBaseUrl}/user`, {
+      const userReq = await fetch(`${baseUrls.applicationServiceUrl}/user`, {
         method: 'PUT',
         headers: defaultHeader,
         body: JSON.stringify({ clientId: id, name: user.name })
@@ -198,7 +191,7 @@ function App() {
     console.log(user)
     let data: User | undefined = undefined
     try {
-      const dataUnparsed = await fetch(`${chatApplicationServiceBaseUrl}/user/name/${user.name}`,
+      const dataUnparsed = await fetch(`${baseUrls.applicationServiceUrl}/user/name/${user.name}`,
         {
           method: 'PUT',
           headers: defaultHeader,
@@ -206,13 +199,13 @@ function App() {
         })
 
       await Promise.all([
-        fetch(`${chatApplicationServiceBaseUrl}/message/user/name`,
+        fetch(`${baseUrls.applicationServiceUrl}/message/user/name`,
           {
             method: 'PUT',
             headers: defaultHeader,
             body: JSON.stringify({ id: user.clientId, name: user.name })
           }),
-        fetch(`${chatApplicationServiceBaseUrl}/conversation/users/name`,
+        fetch(`${baseUrls.applicationServiceUrl}/conversation/users/name`,
           {
             method: 'PUT',
             headers: defaultHeader,

@@ -19,30 +19,9 @@
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   }
   
-  .join-box {
-    margin: 20px;
-    border:1px solid rgb(235, 249, 252);
-    border-radius: 10px;;
-    padding: 20px;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    color: white;
-    width: 40%;
-  
-  }
-  
   .creation-button:hover {
     background-color:rgb(110, 139, 192);
     cursor: pointer;
-  }
-  
-  
-  
-  .form-container {
-    display:flex; 
-    flex-direction:row; 
-    vertical-align: center; 
-    align-items: center; 
-    justify-content:center;
   }
   
   
