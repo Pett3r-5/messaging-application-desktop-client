@@ -3,9 +3,10 @@
     width: 80%;
     padding: 10px;
     margin: 3%;
-    background-color: rgb(236, 224, 122);
+    background-color: rgb(109, 91, 112);
     border-radius: 10px;
     overflow: hidden;
+    color: white;
     box-shadow: 1px 1px 3px #111111;
 }
 
