@@ -12,7 +12,7 @@ function DesktopHeader() {
     }
 
     return (
-        <div>
+        <div className="desktop-header">
             <div id="title-bar-btns">
                 <img id="close-btn" alt="x" onClick={closeWindow} src={closeButton}/>
             </div>
