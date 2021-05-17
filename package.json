@@ -1,6 +1,6 @@
 {
-  "name": "create-electron-ts-react",
-  "productName": "electron-ts-react",
+  "name": "chat-application",
+  "productName": "chat-application",
   "version": "3.1.11",
   "description": "Electron Typescript React Boilerplate / Starter",
   "bin": "./lib/setup.js",

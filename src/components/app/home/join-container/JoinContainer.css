@@ -115,24 +115,7 @@
     cursor: pointer;
    }
 
-   .closing-modal {
-    width: 100%;
-    padding: 10px 0px;
-    display: flex;
-    justify-content: flex-end;
-   }
-
-  .conversation-found {
-      border-radius: 17px;
-      background-color: rgb(194, 171, 216);
-      width: 40px;
-      padding:10px;
-  }
-
-  .conversation-found:hover {
-    cursor:pointer;
-    background-color: rgb(194, 171, 216);
-}
+   
 
 .options-modal {
     margin: auto;

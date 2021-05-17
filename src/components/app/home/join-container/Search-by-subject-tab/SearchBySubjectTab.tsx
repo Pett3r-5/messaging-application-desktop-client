@@ -21,7 +21,8 @@ const customStyles = {
         left: 40,
         minHeight: "10%",
         maxHeight: "40%",
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        boxShadow: "1px 1px 3px #111111"
     },
     overlay: {
         backgroundColor: "invisible"
