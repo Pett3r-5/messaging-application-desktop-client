@@ -22,10 +22,14 @@ function ChatOptions({ createConversation }: ChatOptions) {
         setFormData({ ...formData, [event.currentTarget.name]: event.currentTarget.value })
     }
 
-    const handleSwitch = () => {
+    const handleIsPublicSwitch = () => {
         const value:string= formData.isPublic === "true" ? "false" : "true"
-        console.log(value)
         setFormData({ ...formData, isPublic: value })
+    }
+
+    const handlePersistSwitch = () => {
+        const value:string= formData.persist === "true" ? "false" : "true"
+        setFormData({ ...formData, persist: value })
     }
 
     return (
@@ -39,15 +43,22 @@ function ChatOptions({ createConversation }: ChatOptions) {
                     <input id="subject" type="text" name="subject" onChange={handleChange} />
                 </div>
                 <div className="form-section">
-                    <div className="form-row">
+                    <div className="form-row" style={{justifyContent:"space-between"}}>
                         <div style={{ display: "flex", flexDirection: "column" }}>
                             <label htmlFor="isPublic">{formData.isPublic === "true" ? "É público " : "É privado "}</label>
                             <label className="switch">
-                                <input type="checkbox" checked={formData.isPublic === "false"} onChange={handleSwitch} />
+                                <input type="checkbox" checked={formData.isPublic === "false"} onChange={handleIsPublicSwitch} />
                                 <span className="slider round"></span>
                             </label>
                         </div>
 
+                        <div style={{ display: "flex", flexDirection: "column", maxWidth: "50%" }}>
+                            <label htmlFor="isPublic">{formData.persist === "false" ? "Descartada após terminada" : "Não descartada"}</label>
+                            <label className="switch">
+                                <input type="checkbox" checked={formData.persist === "false"} onChange={handlePersistSwitch} />
+                                <span className="slider round"></span>
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div className="form-section" style={{ display: "flex", justifyContent: "flex-end" }}>

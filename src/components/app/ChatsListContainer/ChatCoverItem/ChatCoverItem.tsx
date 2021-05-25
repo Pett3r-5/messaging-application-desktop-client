@@ -16,12 +16,19 @@ function ChatCoverItem({ conversation, openConversation }: ChatConverItemProps) 
   
     return (
       <div className="chat-item" onClick={openThisConversation}>
-        {!!conversation.subject ? <div>{conversation.subject}</div> : <></>}
-        <div style={{fontSize: 14}}>
-        {conversation.users.map((element, index)=>(<>
-        {index === conversation.users.length-1 ? element.name : mapper.addComma(element.name) } 
-        </>))}
+        <div>
+          {!!conversation.subject ? <div>{conversation.subject}</div> : <></>}
+          <div style={{fontSize: 14}}>
+            {conversation.users.map((element, index)=>(<>
+            {index === conversation.users.length-1 ? element.name : mapper.addComma(element.name) } 
+            </>))}
+          </div>
         </div>
+        
+        { !!conversation.hasNewMessage ?
+           <div style={{borderRadius: 50, height: 10, width: 10, backgroundColor: "red"}}></div> :
+           <></>
+        }
         
       </div>
       

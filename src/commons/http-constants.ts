@@ -5,7 +5,7 @@ export const baseUrls = {
 //export const baseUrls = {
 //    applicationServiceUrl: "http://localhost:7011",
 //      applicationManagerUrl: "http://localhost:5000"
-//  }
+//}
 
 export const defaultHeader = {
   'Accept': 'application/json',

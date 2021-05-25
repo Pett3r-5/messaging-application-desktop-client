@@ -16,7 +16,7 @@ function SearchByLinkTab({ joinConversationByLink }: SearchByLinkTabProps) {
 
     const submitJoinByLink = (event: SyntheticEvent) => {
         event.preventDefault()
-        joinConversationByLink(searchInput)
+        joinConversationByLink(searchInput, true)
     }
 
     return (

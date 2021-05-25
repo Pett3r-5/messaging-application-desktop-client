@@ -33,7 +33,6 @@ interface UserState {
 
 let socket = io(baseUrls.applicationManagerUrl);
 socket.on('connect', function () {
-  console.log("Connected here")
 });
 
 
@@ -63,33 +62,49 @@ function App() {
       }
 
       setUser({ ...user, clientId: id })
-
-
       getConversationList(id)
-      socket.on("conversation-joined", (res: Conversation) => {
 
-        setOpenedConversation(res)
-        setDisplay({ chatState: ChatState.OPENED })
-
-        console.log("conversation-joined")
-        console.log(JSON.stringify(res, undefined, 4))
+      socket.emit("user-id", id)
+      socket.on("conversation-joined", (res:{conversation: Conversation, isOpenedConversation: boolean}) => {
+        console.log("conversation-joined");
+        console.log(res);
+        
+        if(res.isOpenedConversation){
+          setOpenedConversation({...res.conversation})
+          setDisplay({ chatState: ChatState.OPENED })
+        }
       })
 
-      socket.on("message-posted", (res: any) => {
-        console.log("message-posted")
-        console.log(res)
-
-        setOpenedConversation(res)
-      })
 
     }
 
     init()
     return () => {
       socket.off("conversation-joined");
-      socket.off("message-posted");
     };
   }, [])
+
+  useEffect(()=>{
+    socket.on("message-posted", (res: Conversation) => {
+      if(res.conversationLink === openedConversation.conversationLink){
+        setOpenedConversation(res)
+      } else {
+        let convsWithNewMessage = conversationList.map(el=>{
+          if(res.conversationLink === el.conversationLink) {
+            el.hasNewMessage = true
+          }
+          return el
+        })
+        console.log("convsWithNewMessage")
+        console.log(convsWithNewMessage)
+        setConversationList(convsWithNewMessage)
+      }
+    })
+
+    return () => {
+      socket.off("message-posted");
+    }
+  }, [openedConversation])
 
 
 
@@ -110,9 +125,6 @@ function App() {
         name: user.name
       }]
     }
-
-    console.log(JSON.stringify(conv, undefined, 4));
-
     socket.emit("create-conversation", conv)
   }
 
@@ -121,35 +133,26 @@ function App() {
       name: user.name,
       clientId: user.clientId
     }
-
-    console.log("post-message posting conversation");
-    console.log(JSON.stringify(message, undefined, 4));
     socket.emit("post-message", { conversation: openedConversation, message: message })
   }
 
-  const joinConversationByLink = (conversationLink: string) => {
-
-    console.log("join-conversation");
-    console.log(JSON.stringify(conversationLink, undefined, 4));
+  const joinConversationByLink = (conversationLink: string, isOpenedConversation: boolean) => {
     socket.emit("join-conversation", {
-      conversationLink: conversationLink, user: {
+      conversationLink: conversationLink, 
+      user: {
         clientId: user.clientId,
         name: user.name
-      }
+      },
+      isOpenedConversation: isOpenedConversation
     })
   }
 
   const openConversation = (conversationLink: string) => {
-
-    console.log("get-conversation");
-    console.log(JSON.stringify(conversationLink, undefined, 4));
     socket.emit("get-conversation", { conversationLink: conversationLink })
 
   }
 
   const getConversationList = async (id: string) => {
-    console.log("getConversationList")
-    console.log(id)
     let conversationList
     let userUpserted
     try {
@@ -167,14 +170,17 @@ function App() {
       })
 
       userUpserted = await userReq.json()
-
     } catch (error) {
       console.log(error)
     }
-    console.log("userUpserted")
-    console.log(userUpserted)
+
     if (!!conversationList) {
       setConversationList([...conversationList])
+      conversationList.map((el:Conversation)=>{
+        joinConversationByLink(el.conversationLink, false)
+        return el
+      })
+      
     } else {
       setConversationList([])
     }
@@ -187,8 +193,6 @@ function App() {
 
 
   const editUsername = async (user: User) => {
-    console.log("edit-usernmae")
-    console.log(user)
     let data: User | undefined = undefined
     try {
       const dataUnparsed = await fetch(`${baseUrls.applicationServiceUrl}/user/name/${user.name}`,

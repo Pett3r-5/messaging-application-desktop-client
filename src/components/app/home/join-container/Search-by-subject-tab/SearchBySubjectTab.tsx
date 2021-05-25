@@ -65,7 +65,7 @@ function SearchBySubjectTab({ joinConversationByLink }: SearchBySubjectTabProps)
 
     const joinConversationBySubject = (conversationLink: string) => {
         if (!!conversationLink) {
-            joinConversationByLink(conversationLink)
+            joinConversationByLink(conversationLink, true)
             closeModal()
         }
     }

@@ -9,10 +9,5 @@ export default interface Conversation {
     subject?:string
     users: User[]
     messages: Message[]
-
-    //constructor(conversationLink: string, users: User[], messages: Message[]){
-   //         this.conversationLink = conversationLink
-    //        this.users = users
-    //        this.messages = messages
-    //}
+    hasNewMessage?: boolean
 }
