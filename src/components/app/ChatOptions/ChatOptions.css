@@ -119,3 +119,19 @@ label {
   .slider.round:before {
     border-radius: 50%;
   }
+
+
+  .closing-modal {
+    width: 100%;
+    padding: 20px 0px 0px 0px;
+    display: flex;
+    justify-content: flex-end;
+   }
+
+   .close-btn {
+    height: 10px;
+   }
+
+   .close-btn:hover {
+    cursor: pointer;
+   }

@@ -152,6 +152,10 @@ function App() {
 
   }
 
+  const backToHomeScreen = () => {
+    setDisplay({ chatState: ChatState.CLOSED })
+  }
+
   const getConversationList = async (id: string) => {
     let conversationList
     let userUpserted
@@ -248,7 +252,7 @@ function App() {
     <div className="app-container">
       <DesktopHeader />
       <div className="app-body">
-        {display.chatState === ChatState.OPTIONS ? <ChatOptions createConversation={createConversation} /> : <></>}
+        {display.chatState === ChatState.OPTIONS ? <ChatOptions createConversation={createConversation} backToHomeScreen={backToHomeScreen} /> : <></>}
 
         {display.chatState === ChatState.OPENED ?
           <Chat openedConversation={openedConversation} postMessage={postMessage} userId={user.clientId} minimizeConversation={minimizeConversation} /> :

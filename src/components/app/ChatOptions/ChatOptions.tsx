@@ -1,12 +1,14 @@
 import React, { SyntheticEvent, useEffect, useState } from 'react';
 import ChatCreationForm from '../../../models/ChatCreationForm';
 import './ChatOptions.css';
+const closeButton = require('../../../assets/close.svg').default
 
 interface ChatOptions {
     createConversation: Function
+    backToHomeScreen: Function
 }
 
-function ChatOptions({ createConversation }: ChatOptions) {
+function ChatOptions({ createConversation, backToHomeScreen }: ChatOptions) {
     const [formData, setFormData] = useState<ChatCreationForm>({
         subject: "",
         isPublic: "false",
@@ -32,8 +34,15 @@ function ChatOptions({ createConversation }: ChatOptions) {
         setFormData({ ...formData, persist: value })
     }
 
+    function closeModal() {
+        backToHomeScreen()
+    }
+
     return (
         <div className="options-modal">
+            <div className="closing-modal">
+                        <img className="close-btn" alt="x" onClick={closeModal} src={closeButton} />
+             </div>
             <form onSubmit={handleSubmit}>
                 <div className="form-section" style={{padding: "15px 0px 5px 0px", borderBottom: "solid black 1px"}}>
                    Nova Conversa
