@@ -3,7 +3,6 @@ import { hot } from "react-hot-loader/root";
 import { machineId } from 'node-machine-id';
 
 import './App.css';
-import io from 'socket.io-client';
 import DesktopHeader from './desktop-header/DesktopHeader';
 import Home from './home/Home';
 import Chat from './chat/Chat';
@@ -14,27 +13,12 @@ import ChatListContainer from './ChatsListContainer/ChatsListContainer';
 import ChatOptions from './ChatOptions/ChatOptions';
 import ChatCreationForm from '../../models/ChatCreationForm';
 import { baseUrls, defaultHeader } from '../../commons/http-constants';
-
-enum ChatState {
-  OPTIONS,
-  OPENED,
-  CLOSED
-}
-
-interface Display {
-  chatState: ChatState
-}
-
-interface UserState {
-  clientId: string
-  name: string
-}
+import Connection from '../../commons/Socket';
+import { UserState, Display, ChatState } from './AppState'
 
 
-let socket = io(baseUrls.applicationManagerUrl);
-socket.on('connect', function () {
-});
 
+Connection.connect()
 
 
 function App() {
@@ -64,8 +48,8 @@ function App() {
       setUser({ ...user, clientId: id })
       getConversationList(id)
 
-      socket.emit("user-id", id)
-      socket.on("conversation-joined", (res:{conversation: Conversation, isOpenedConversation: boolean}) => {
+      Connection.getSocket().emit("user-id", id)
+      Connection.getSocket().on("conversation-joined", (res:{conversation: Conversation, isOpenedConversation: boolean}) => {
         console.log("conversation-joined");
         console.log(res);
         
@@ -80,12 +64,12 @@ function App() {
 
     init()
     return () => {
-      socket.off("conversation-joined");
+      Connection.getSocket().off("conversation-joined");
     };
   }, [])
 
   useEffect(()=>{
-    socket.on("message-posted", (res: Conversation) => {
+    Connection.getSocket().on("message-posted", (res: Conversation) => {
       if(res.conversationLink === openedConversation.conversationLink){
         setOpenedConversation(res)
       } else {
@@ -102,7 +86,7 @@ function App() {
     })
 
     return () => {
-      socket.off("message-posted");
+      Connection.getSocket().off("message-posted");
     }
   }, [openedConversation])
 
@@ -125,7 +109,7 @@ function App() {
         name: user.name
       }]
     }
-    socket.emit("create-conversation", conv)
+    Connection.getSocket().emit("create-conversation", conv)
   }
 
   const postMessage = (message: Message) => {
@@ -133,11 +117,11 @@ function App() {
       name: user.name,
       clientId: user.clientId
     }
-    socket.emit("post-message", { conversation: openedConversation, message: message })
+    Connection.getSocket().emit("post-message", { conversation: openedConversation, message: message })
   }
 
   const joinConversationByLink = (conversationLink: string, isOpenedConversation: boolean) => {
-    socket.emit("join-conversation", {
+    Connection.getSocket().emit("join-conversation", {
       conversationLink: conversationLink, 
       user: {
         clientId: user.clientId,
@@ -148,7 +132,7 @@ function App() {
   }
 
   const openConversation = (conversationLink: string) => {
-    socket.emit("get-conversation", { conversationLink: conversationLink })
+    Connection.getSocket().emit("get-conversation", { conversationLink: conversationLink })
 
   }
 
@@ -234,7 +218,7 @@ function App() {
   }
 
   const minimizeConversation = ()=>{
-    socket.emit("leave-conversation", openedConversation.conversationLink)
+    Connection.getSocket().emit("leave-conversation", openedConversation.conversationLink)
     setOpenedConversation({
       _id: "",
       conversationLink: "",
