@@ -34,7 +34,7 @@ function UserName({ user, editUsername }: UserNameProps) {
         <div>
             {!!isInputEnabled ?
             <form className="welcome-sentence" onSubmit={handleSubmit}>
-                <div id="welcome-user">Bem vindo, 
+                <div id="welcome-user">Bem-vindo, 
                 <input id="input-name" placeholder={user.name} onChange={handleChange} name="name" value={nameValue} />!
                 </div>
                 <button type="submit" id="edit-button">
@@ -43,7 +43,7 @@ function UserName({ user, editUsername }: UserNameProps) {
             </form>
             : 
             <div style={{margin:25, display:"flex", flexDirection: "row"}}>
-                <div id="welcome-user">Bem vindo, {user.name}! </div>
+                <div id="welcome-user">Bem-vindo, {user.name}! </div>
                 <button id="edit-button" onClick={(event)=>editName(event)}>
                     <img src={toolIcon} id="tool-icon" />
                 </button>
