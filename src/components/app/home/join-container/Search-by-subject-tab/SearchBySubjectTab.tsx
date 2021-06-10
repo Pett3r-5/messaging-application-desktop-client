@@ -1,13 +1,10 @@
-import React, { SyntheticEvent, useState } from 'react';
+import React, { SyntheticEvent, useContext, useState } from 'react';
 import './SearchBySubjectTab.css';
 import { baseUrls, defaultHeader } from '../../../../../commons/http-constants';
 import Modal from 'react-modal';
 import Conversation from '../../../../../models/Conversation';
 const closeButton = require('../../../../../assets/close.svg').default
-
-interface SearchBySubjectTabProps {
-    joinConversationByLink: Function
-}
+import { ConversationLinkContext } from '../../../App';
 
 
 const customStyles = {
@@ -31,10 +28,11 @@ const customStyles = {
 
 
 
-function SearchBySubjectTab({ joinConversationByLink }: SearchBySubjectTabProps) {
+function SearchBySubjectTab() {
     const [searchInput, setSearchInput] = useState("")
     const [modalIsOpen, setIsOpen] = React.useState(false)
     const [conversationsSearched, setConversationsSearched] = useState<Array<Conversation>>([])
+    const { joinConversationByLink } = useContext(ConversationLinkContext)
 
     function openModal() {
         setIsOpen(true);
@@ -64,7 +62,7 @@ function SearchBySubjectTab({ joinConversationByLink }: SearchBySubjectTabProps)
     }
 
     const joinConversationBySubject = (conversationLink: string) => {
-        if (!!conversationLink) {
+        if (!!conversationLink && !!joinConversationByLink) {
             joinConversationByLink(conversationLink, true)
             closeModal()
         }

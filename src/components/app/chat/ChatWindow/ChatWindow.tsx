@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import Conversation from '../../../../models/Conversation';
+import { useContext, useEffect, useState } from 'react';
 import './ChatWindow.css';
 import ChatMessage from './ChatMessage/ChatMessage';
 import MessageForm from './MessageForm/MessageForm';
 import ChatHeader from './ChatHeader/ChatHeader';
+import { OpenedConversationContext } from '../../App';
+import React from 'react';
 
 interface ChatWindowProps {
-  openedConversation: Conversation
-  postMessage: Function
-  userId: string
   minimizeConversation: Function
 }
 
-function ChatWindow({ openedConversation, postMessage, userId, minimizeConversation }:ChatWindowProps) {
+function ChatWindow({ minimizeConversation }:ChatWindowProps) {
+
+  const { openedConversation } = useContext(OpenedConversationContext)
   const [ messageContainerHeight, setMessageContainerHeight ] = useState<boolean>(false)
 
   useEffect(()=> {
@@ -34,13 +34,13 @@ function ChatWindow({ openedConversation, postMessage, userId, minimizeConversat
   
     return (
       <div className="chat-window">
-          <ChatHeader conversation={openedConversation} onHeaderHover={onHeaderHover} minimizeConversation={minimizeConversation}/>
+          <ChatHeader onHeaderHover={onHeaderHover} minimizeConversation={minimizeConversation}/>
           <div className={messageContainerHeight ? "messages-container-smaller"  : "messages-container" }>
             {!!openedConversation && !!openedConversation.messages ? 
-            openedConversation.messages.map((message, index)=><ChatMessage message={message} userId={userId} key={index} />) 
+            openedConversation.messages.map((message, index)=><ChatMessage message={message} key={index} />) 
             : <></>}
           </div>
-          <MessageForm postMessage={postMessage}/>
+          <MessageForm/>
           
       </div>
       

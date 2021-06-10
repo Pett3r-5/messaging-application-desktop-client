@@ -1,24 +1,22 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react';
+import React, { SyntheticEvent, useContext, useState } from 'react';
 import ChatCreationForm from '../../../models/ChatCreationForm';
 import './ChatOptions.css';
 const closeButton = require('../../../assets/close.svg').default
+import Connection from '../../../commons/Connection'
+import { UserContext } from '../App';
 
 interface ChatOptions {
-    createConversation: Function
     backToHomeScreen: Function
 }
 
-function ChatOptions({ createConversation, backToHomeScreen }: ChatOptions) {
+function ChatOptions({ backToHomeScreen }: ChatOptions) {
+
+    const { user } = useContext(UserContext)
     const [formData, setFormData] = useState<ChatCreationForm>({
         subject: "",
         isPublic: "false",
         persist: "true"
     })
-
-    const handleSubmit = (event: SyntheticEvent) => {
-        event.preventDefault()
-        createConversation(formData)
-    }
 
     const handleChange = (event: any) => {
         setFormData({ ...formData, [event.currentTarget.name]: event.currentTarget.value })
@@ -32,6 +30,23 @@ function ChatOptions({ createConversation, backToHomeScreen }: ChatOptions) {
     const handlePersistSwitch = () => {
         const value:string= formData.persist === "true" ? "false" : "true"
         setFormData({ ...formData, persist: value })
+    }
+
+    const handleSubmit = (event: SyntheticEvent) => {
+        event.preventDefault()
+
+        const conv = {
+            conversationLink: "",
+            messages: [],
+            subject: formData.subject,
+            isPublic: formData.isPublic === "true" ? true : false,
+            persist: formData.persist === "true" ? true : false,
+            users: [{
+              clientId: user?.clientId,
+              name: user?.name
+            }]
+          }
+          Connection.getSocket().emit("create-conversation", conv)
     }
 
     function closeModal() {

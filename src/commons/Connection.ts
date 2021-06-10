@@ -13,6 +13,7 @@ export default class Connection {
 
     public static connect(){
         this.socket.on('connect', function () {
+            console.log("connected")
         });
     }
 }

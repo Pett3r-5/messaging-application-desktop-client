@@ -1,13 +1,11 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react';
+import React, { SyntheticEvent, useContext, useState } from 'react';
+import { ConversationLinkContext } from '../../../App';
 import './SearchByLinkTab.css';
 
 
-interface SearchByLinkTabProps {
-    joinConversationByLink: Function
-}
-
-function SearchByLinkTab({ joinConversationByLink }: SearchByLinkTabProps) {
+function SearchByLinkTab() {
     const [searchInput, setSearchInput] = useState("")
+    const { joinConversationByLink } = useContext(ConversationLinkContext)
 
     const handleChange = (event: any) => {
         setSearchInput(event.currentTarget.value)
@@ -16,7 +14,9 @@ function SearchByLinkTab({ joinConversationByLink }: SearchByLinkTabProps) {
 
     const submitJoinByLink = (event: SyntheticEvent) => {
         event.preventDefault()
-        joinConversationByLink(searchInput, true)
+        if(joinConversationByLink) {
+            joinConversationByLink(searchInput, true)
+        }
     }
 
     return (

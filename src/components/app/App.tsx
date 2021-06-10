@@ -13,16 +13,20 @@ import ChatListContainer from './ChatsListContainer/ChatsListContainer';
 import ChatOptions from './ChatOptions/ChatOptions';
 import ChatCreationForm from '../../models/ChatCreationForm';
 import { baseUrls, defaultHeader } from '../../commons/http-constants';
-import Connection from '../../commons/Socket';
+import Connection from '../../commons/Connection';
 import { UserState, Display, ChatState } from './AppState'
 
 
+export const OpenedConversationContext: React.Context<Partial<{ openedConversation: Conversation, setOpenedConversation: Function }>> = React.createContext({}) //establish the root of a context environment. It's what allows any descendent component to consume the data stored on the context.
+export const UserContext: React.Context<Partial<{ user: User, setUser: Function }>> = React.createContext({})
+export const ConversationListContext: React.Context<Partial<{ conversationList: Conversation[], setConversationList: Function, getConversationList: Function }>> = React.createContext({})
+export const ConversationLinkContext: React.Context<Partial<{ joinConversationByLink: Function }>> = React.createContext({})
 
 Connection.connect()
 
 
 function App() {
-  const [user, setUser] = useState<UserState>({ clientId: "", name: "guest" });
+  const [user, setUser] = useState<UserState>({ clientId: "", name: "guest" })
   const [display, setDisplay] = useState<Display>({ chatState: ChatState.CLOSED })
 
   const [openedConversation, setOpenedConversation] = useState<Conversation>({
@@ -49,10 +53,7 @@ function App() {
       getConversationList(id)
 
       Connection.getSocket().emit("user-id", id)
-      Connection.getSocket().on("conversation-joined", (res:{conversation: Conversation, isOpenedConversation: boolean}) => {
-        console.log("conversation-joined");
-        console.log(res);
-        
+      Connection.getSocket().on("conversation-joined", (res: { conversation: Conversation, isOpenedConversation: boolean }) => {
         if(res.isOpenedConversation){
           setOpenedConversation({...res.conversation})
           setDisplay({ chatState: ChatState.OPENED })
@@ -97,29 +98,6 @@ function App() {
     setDisplay({ chatState: ChatState.OPTIONS })
   }
 
-  const createConversation = (chatCreationForm: ChatCreationForm) => {
-    const conv = {
-      conversationLink: "",
-      messages: [],
-      subject: chatCreationForm.subject,
-      isPublic: chatCreationForm.isPublic === "true" ? true : false,
-      persist: chatCreationForm.persist === "true" ? true : false,
-      users: [{
-        clientId: user.clientId,
-        name: user.name
-      }]
-    }
-    Connection.getSocket().emit("create-conversation", conv)
-  }
-
-  const postMessage = (message: Message) => {
-    message.sentBy = {
-      name: user.name,
-      clientId: user.clientId
-    }
-    Connection.getSocket().emit("post-message", { conversation: openedConversation, message: message })
-  }
-
   const joinConversationByLink = (conversationLink: string, isOpenedConversation: boolean) => {
     Connection.getSocket().emit("join-conversation", {
       conversationLink: conversationLink, 
@@ -131,14 +109,6 @@ function App() {
     })
   }
 
-  const openConversation = (conversationLink: string) => {
-    Connection.getSocket().emit("get-conversation", { conversationLink: conversationLink })
-
-  }
-
-  const backToHomeScreen = () => {
-    setDisplay({ chatState: ChatState.CLOSED })
-  }
 
   const getConversationList = async (id: string) => {
     let conversationList
@@ -179,44 +149,6 @@ function App() {
   }
 
 
-
-  const editUsername = async (user: User) => {
-    let data: User | undefined = undefined
-    try {
-      const dataUnparsed = await fetch(`${baseUrls.applicationServiceUrl}/user/name/${user.name}`,
-        {
-          method: 'PUT',
-          headers: defaultHeader,
-          body: JSON.stringify({ clientId: user.clientId, name: user.name })
-        })
-
-      await Promise.all([
-        fetch(`${baseUrls.applicationServiceUrl}/message/user/name`,
-          {
-            method: 'PUT',
-            headers: defaultHeader,
-            body: JSON.stringify({ id: user.clientId, name: user.name })
-          }),
-        fetch(`${baseUrls.applicationServiceUrl}/conversation/users/name`,
-          {
-            method: 'PUT',
-            headers: defaultHeader,
-            body: JSON.stringify({ id: user.clientId, name: user.name })
-          })
-      ])
-
-      data = await dataUnparsed.json()
-
-    } catch (error) {
-      console.log(error)
-    }
-    if (!!data) {
-      setUser({ clientId: data.clientId, name: data.name })
-    }
-
-    getConversationList(user.clientId)
-  }
-
   const minimizeConversation = ()=>{
     Connection.getSocket().emit("leave-conversation", openedConversation.conversationLink)
     setOpenedConversation({
@@ -230,29 +162,40 @@ function App() {
   }
 
 
+  const backToHomeScreen = () => {
+    setDisplay({ chatState: ChatState.CLOSED })
+  }
+
 
 
   return (
     <div className="app-container">
-      <DesktopHeader />
       <div className="app-body">
-        {display.chatState === ChatState.OPTIONS ? <ChatOptions createConversation={createConversation} backToHomeScreen={backToHomeScreen} /> : <></>}
+        <UserContext.Provider value={{ user: user, setUser: setUser }}>
 
-        {display.chatState === ChatState.OPENED ?
-          <Chat openedConversation={openedConversation} postMessage={postMessage} userId={user.clientId} minimizeConversation={minimizeConversation} /> :
-          <></>}
+          {display.chatState === ChatState.OPTIONS ? <ChatOptions backToHomeScreen={backToHomeScreen} /> : <></>}
 
-        {display.chatState === ChatState.CLOSED ?
-          <Home user={user} showNewChatOptions={showNewChatOptions} editUsername={editUsername} joinConversationByLink={joinConversationByLink} />
-          : <></>
-        }
+          <OpenedConversationContext.Provider value={{ openedConversation: openedConversation, setOpenedConversation: setOpenedConversation }}>
+            {display.chatState === ChatState.OPENED ?
+              <Chat minimizeConversation={minimizeConversation} /> :
+              <></>}
+          </OpenedConversationContext.Provider>
 
-        {!!conversationList && conversationList.length > 0 ?
-          <ChatListContainer conversations={conversationList} openedConversation={openedConversation} openConversation={openConversation} />
-          : <></>}
+          <ConversationLinkContext.Provider value={{ joinConversationByLink: joinConversationByLink }}>
+            <ConversationListContext.Provider value={{ conversationList: conversationList, setConversationList: setConversationList, getConversationList: getConversationList }}>
+              {display.chatState === ChatState.CLOSED ?
+                <Home showNewChatOptions={showNewChatOptions} />
+                : <></>
+              }
+            </ConversationListContext.Provider>
+          </ConversationLinkContext.Provider>
 
+          {!!conversationList && conversationList.length > 0 ?
+            <ChatListContainer conversations={conversationList} openedConversation={openedConversation} />
+            : <></>}
+
+        </UserContext.Provider>
       </div>
-
     </div>
   );
 }
