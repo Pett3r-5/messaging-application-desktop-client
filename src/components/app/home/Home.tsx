@@ -4,7 +4,7 @@ import './Home.css';
 import JoinContainer from './join-container/JoinContainer';
 import UserName from './UserName/UserName';
 
-const appLogo = require('../../../assets/speech-bubble-svgrepo-com.svg').default
+const appLogo = require('../../../assets/bubble-logo5.png').default
 
 interface HomeProps {
     user: User
@@ -28,7 +28,7 @@ function Home({ user, showNewChatOptions, joinConversationByLink, editUsername }
 
       <div className="home-container">
         <div style={{margin:25}}>
-          <img style={{height:100}} alt="logo" src={appLogo}/>
+          <img style={{height:90}} alt="logo" src={appLogo}/>
         </div>
         <UserName user={user} editUsername={editUsername} />
         <div>
