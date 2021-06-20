@@ -30,7 +30,8 @@ interface UserState {
   name: string
 }
 
-
+console.log("baseUrls.applicationManagerUrl");
+console.log(baseUrls.applicationManagerUrl);
 let socket = io(baseUrls.applicationManagerUrl);
 socket.on('connect', function () {
 });
@@ -63,26 +64,31 @@ function App() {
 
       setUser({ ...user, clientId: id })
       getConversationList(id)
-
       socket.emit("user-id", id)
-      socket.on("conversation-joined", (res:{conversation: Conversation, isOpenedConversation: boolean}) => {
-        console.log("conversation-joined");
-        console.log(res);
-        
-        if(res.isOpenedConversation){
-          setOpenedConversation({...res.conversation})
-          setDisplay({ chatState: ChatState.OPENED })
-        }
-      })
-
-
     }
 
     init()
+  }, [])
+
+  useEffect(()=>{
+    socket.on("conversation-joined", (res:{conversation: Conversation, isOpenedConversation: boolean, requestOwner: string}) => {
+      console.log("conversation-joined");
+      console.log(res);
+      console.log("res.requestOwner");
+      console.log(res.requestOwner);
+      console.log("user.clientId");
+      console.log(user.clientId);
+      
+      if(res.isOpenedConversation && res.requestOwner === user.clientId){
+        setOpenedConversation({...res.conversation})
+        setDisplay({ chatState: ChatState.OPENED })
+      }
+    })
+    
     return () => {
       socket.off("conversation-joined");
     };
-  }, [])
+  }, [user])
 
   useEffect(()=>{
     socket.on("message-posted", (res: Conversation) => {
@@ -104,7 +110,7 @@ function App() {
     return () => {
       socket.off("message-posted");
     }
-  }, [openedConversation])
+  }, [openedConversation, conversationList])
 
 
 
@@ -148,7 +154,7 @@ function App() {
   }
 
   const openConversation = (conversationLink: string) => {
-    socket.emit("get-conversation", { conversationLink: conversationLink })
+    socket.emit("get-conversation", { conversationLink: conversationLink, clientId: user.clientId })
 
   }
 
