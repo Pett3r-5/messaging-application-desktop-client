@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext }  from 'react';
 import Conversation from '../../../../models/Conversation';
 import './ChatCoverItem.css';
 import { mapper } from '../../../../commons/mapper';
+import Connection from '../../../../commons/Connection';
+import { UserContext } from '../../App';
 
 interface ChatConverItemProps {
   conversation: Conversation
-  openConversation: Function
 }
 
-function ChatCoverItem({ conversation, openConversation }: ChatConverItemProps) {
+function ChatCoverItem({ conversation }: ChatConverItemProps) {
+  const { user } = useContext(UserContext)
 
   function openThisConversation() {
-    openConversation(conversation.conversationLink)
+    Connection.getSocket().emit("get-conversation", { conversationLink: conversation.conversationLink, clientId: user?.clientId })
   }
   
     return (

@@ -4,18 +4,15 @@ import './Chat.css';
 import ChatWindow from './ChatWindow/ChatWindow';
 
 interface ChatProps {
-  openedConversation: Conversation
-  postMessage: Function
-  userId: string
   minimizeConversation: Function
 }
 
 
-function Chat({openedConversation, postMessage, userId, minimizeConversation}: ChatProps) {
+function Chat({minimizeConversation}: ChatProps) {
   
     return (
       <div className="chat-container">
-          <ChatWindow openedConversation={openedConversation} postMessage={postMessage} userId={userId} minimizeConversation={minimizeConversation}/>
+          <ChatWindow minimizeConversation={minimizeConversation}/>
       </div>
     );
   }

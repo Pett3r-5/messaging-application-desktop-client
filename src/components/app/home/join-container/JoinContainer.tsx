@@ -1,5 +1,5 @@
 
-import React, { SyntheticEvent, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './JoinContainer.css';
 import {Tab, TabList, TabPanel, Tabs} from 'react-tabs'
 import 'react-tabs/style/react-tabs.css';
@@ -7,16 +7,7 @@ import SearchBySubjectTab from './Search-by-subject-tab/SearchBySubjectTab';
 import SearchByLinkTab from './Search-by-link-tab/SearchByLinkTab';
 
 
-interface JoinContainerProps {
-    joinConversationByLink: Function
-}
-
-interface JoinContainerForm {
-    linkInput: string
-    searchInput: string
-}
-
-function JoinContainer(props: any & JoinContainerProps) {
+function JoinContainer(props: any) {
     const [dropdown, setDropdown] = useState<boolean>(false)
     
     const expandForm = () => {
@@ -35,10 +26,10 @@ function JoinContainer(props: any & JoinContainerProps) {
                         <Tab style={{backgroundColor: "transparent", color:"white"}}>Por assunto</Tab>
                     </TabList>
                     <TabPanel>
-                        <SearchByLinkTab joinConversationByLink={props.joinConversationByLink}/>
+                        <SearchByLinkTab/>
                     </TabPanel>
                     <TabPanel>
-                        <SearchBySubjectTab joinConversationByLink={props.joinConversationByLink}/>
+                        <SearchBySubjectTab/>
                     </TabPanel>
                     </Tabs>
                 </div>

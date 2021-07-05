@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Message from '../../../../../models/Message';
+import { UserContext } from '../../../App';
 import './ChatMessage.css';
 
 interface ChatMessageProps {
   message: Message
-  userId: string
 }
 
-function ChatMessage({message, userId}: ChatMessageProps) {
+function ChatMessage({ message }: ChatMessageProps) {
+  const { user } = useContext(UserContext)
 
-  if(!!message && !!message.sentBy && !!userId) {
+  if(!!message && !!message.sentBy && !!user?.clientId) {
     return (
-      <div className={message.sentBy.clientId===userId ? "own-message" : "others-message"}>
+      <div className={message.sentBy.clientId===user?.clientId ? "own-message" : "others-message"}>
         <div className="message-detail">
           {message.sentBy?.name} disse:
         </div>
-        <div className={message.sentBy.clientId===userId ? "own-message-content" : "others-message-content"}>
+        <div className={message.sentBy.clientId===user?.clientId ? "own-message-content" : "others-message-content"}>
           {message.content}
         </div>
         <div className="message-detail">
