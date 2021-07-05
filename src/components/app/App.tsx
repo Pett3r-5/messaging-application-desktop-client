@@ -53,21 +53,23 @@ function App() {
       getConversationList(id)
 
       Connection.getSocket().emit("user-id", id)
-      Connection.getSocket().on("conversation-joined", (res: { conversation: Conversation, isOpenedConversation: boolean }) => {
-        if(res.isOpenedConversation){
-          setOpenedConversation({...res.conversation})
-          setDisplay({ chatState: ChatState.OPENED })
-        }
-      })
-
-
     }
 
     init()
+  }, [])
+
+  useEffect(()=>{
+    Connection.getSocket().on("conversation-joined", (res:{conversation: Conversation, isOpenedConversation: boolean, requestOwner: string}) => {
+      if(res.isOpenedConversation && res.requestOwner === user.clientId){
+        setOpenedConversation({...res.conversation})
+        setDisplay({ chatState: ChatState.OPENED })
+      }
+    })
+
     return () => {
       Connection.getSocket().off("conversation-joined");
     };
-  }, [])
+  }, [user])
 
   useEffect(()=>{
     Connection.getSocket().on("message-posted", (res: Conversation) => {
@@ -89,7 +91,7 @@ function App() {
     return () => {
       Connection.getSocket().off("message-posted");
     }
-  }, [openedConversation])
+  }, [openedConversation, conversationList])
 
 
 
@@ -170,6 +172,7 @@ function App() {
 
   return (
     <div className="app-container">
+      <DesktopHeader />
       <div className="app-body">
         <UserContext.Provider value={{ user: user, setUser: setUser }}>
 

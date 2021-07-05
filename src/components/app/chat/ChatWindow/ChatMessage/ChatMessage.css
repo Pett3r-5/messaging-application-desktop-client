@@ -11,7 +11,7 @@
 }
 
 .others-message {
-    height: 10%;
+    min-height: 10%;
     width: 100%;
     word-break: break-all;
     white-space: normal;
