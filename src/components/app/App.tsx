@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { hot } from "react-hot-loader/root";
 import { machineId } from 'node-machine-id';
+import ReactDOM from "react-dom";
+import { HashRouter, Route, useHistory } from "react-router-dom";
 
 import './App.css';
 import DesktopHeader from './desktop-header/DesktopHeader';
@@ -26,7 +28,7 @@ Connection.connect()
 
 function App() {
   const [user, setUser] = useState<UserState>({ clientId: "", name: "guest" })
-  const [display, setDisplay] = useState<Display>({ chatState: ChatState.CLOSED })
+  const history = useHistory()
 
   const [openedConversation, setOpenedConversation] = useState<Conversation>({
     _id: "",
@@ -57,26 +59,26 @@ function App() {
     init()
   }, [])
 
-  useEffect(()=>{
-    Connection.getSocket().on("conversation-joined", (res:{conversation: Conversation, isOpenedConversation: boolean, requestOwner: string}) => {
-      if(res.isOpenedConversation && res.requestOwner === user.clientId){
-        setOpenedConversation({...res.conversation})
-        setDisplay({ chatState: ChatState.OPENED })
+  useEffect(() => {
+    Connection.getSocket().on("conversation-joined", (res: { conversation: Conversation, isOpenedConversation: boolean, requestOwner: string }) => {
+      if (res.isOpenedConversation && res.requestOwner === user.clientId) {
+        setOpenedConversation({ ...res.conversation })
+        history.push('/conversation')
       }
     })
-    
+
     return () => {
       Connection.getSocket().off("conversation-joined");
     };
   }, [user])
 
-  useEffect(()=>{
+  useEffect(() => {
     Connection.getSocket().on("message-posted", (res: Conversation) => {
-      if(res.conversationLink === openedConversation.conversationLink){
+      if (res.conversationLink === openedConversation.conversationLink) {
         setOpenedConversation(res)
       } else {
-        let convsWithNewMessage = conversationList.map(el=>{
-          if(res.conversationLink === el.conversationLink) {
+        let convsWithNewMessage = conversationList.map(el => {
+          if (res.conversationLink === el.conversationLink) {
             el.hasNewMessage = true
           }
           return el
@@ -96,12 +98,12 @@ function App() {
 
 
   const showNewChatOptions = () => {
-    setDisplay({ chatState: ChatState.OPTIONS })
+    history.push('/options')
   }
 
   const joinConversationByLink = (conversationLink: string, isOpenedConversation: boolean) => {
     Connection.getSocket().emit("join-conversation", {
-      conversationLink: conversationLink, 
+      conversationLink: conversationLink,
       user: {
         clientId: user.clientId,
         name: user.name
@@ -135,11 +137,11 @@ function App() {
 
     if (!!conversationList) {
       setConversationList([...conversationList])
-      conversationList.map((el:Conversation)=>{
+      conversationList.map((el: Conversation) => {
         joinConversationByLink(el.conversationLink, false)
         return el
       })
-      
+
     } else {
       setConversationList([])
     }
@@ -150,7 +152,7 @@ function App() {
   }
 
 
-  const minimizeConversation = ()=>{
+  const minimizeConversation = () => {
     Connection.getSocket().emit("leave-conversation", openedConversation.conversationLink)
     setOpenedConversation({
       _id: "",
@@ -158,13 +160,13 @@ function App() {
       users: [],
       messages: []
     })
-    setDisplay(({ chatState: ChatState.CLOSED }))
+    history.push('/')
     getConversationList(user.clientId)
   }
 
 
   const backToHomeScreen = () => {
-    setDisplay({ chatState: ChatState.CLOSED })
+    history.push('/')
   }
 
 
@@ -175,22 +177,27 @@ function App() {
       <div className="app-body">
         <UserContext.Provider value={{ user: user, setUser: setUser }}>
 
-          {display.chatState === ChatState.OPTIONS ? <ChatOptions backToHomeScreen={backToHomeScreen} /> : <></>}
+          <HashRouter>
+            <Route exact path='/'>
+              <ConversationLinkContext.Provider value={{ joinConversationByLink: joinConversationByLink }}>
+                <ConversationListContext.Provider value={{ conversationList: conversationList, setConversationList: setConversationList, getConversationList: getConversationList }}>
+                  <Home showNewChatOptions={showNewChatOptions} />
+                </ConversationListContext.Provider>
+              </ConversationLinkContext.Provider>
+            </Route>
 
-          <OpenedConversationContext.Provider value={{ openedConversation: openedConversation, setOpenedConversation: setOpenedConversation }}>
-            {display.chatState === ChatState.OPENED ?
-              <Chat minimizeConversation={minimizeConversation} /> :
-              <></>}
-          </OpenedConversationContext.Provider>
+            <Route exact path='/options'>
+              <ChatOptions backToHomeScreen={backToHomeScreen} />
+            </Route>
 
-          <ConversationLinkContext.Provider value={{ joinConversationByLink: joinConversationByLink }}>
-            <ConversationListContext.Provider value={{ conversationList: conversationList, setConversationList: setConversationList, getConversationList: getConversationList }}>
-              {display.chatState === ChatState.CLOSED ?
-                <Home showNewChatOptions={showNewChatOptions} />
-                : <></>
-              }
-            </ConversationListContext.Provider>
-          </ConversationLinkContext.Provider>
+            <Route path='/conversation'>
+              <OpenedConversationContext.Provider value={{ openedConversation: openedConversation, setOpenedConversation: setOpenedConversation }}>
+                <Chat minimizeConversation={minimizeConversation} />
+              </OpenedConversationContext.Provider>
+            </Route>
+
+
+          </HashRouter>
 
           {!!conversationList && conversationList.length > 0 ?
             <ChatListContainer conversations={conversationList} openedConversation={openedConversation} />
